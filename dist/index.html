@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<link rel="icon" href="https://www.bilibili.com/favicon.ico" type="image/x-icon" />
+	<link rel="shortcut icon" href="https://www.bilibili.com/favicon.ico" type="image/x-icon" />
+	<title>Bilibili Live Chat</title>
+	<link href="https://cdn.bootcss.com/twitter-bootstrap/3.4.0/css/bootstrap.min.css" rel="stylesheet">
+	<style>
+		html,body{
+			width: 100%;
+			height: 100%;
+		}
+
+		body{
+			display: flex;
+			align-items: flex-start;
+			justify-content: center;
+		}
+
+		#main{
+			width: 50%;
+			margin-top: 25vh;
+		}
+	</style>
+</head>
+
+<body>
+	<div id="main" class="panel panel-default">
+		<div class="panel-heading">
+			<h2 class="panel-title" style="font-size:30px">Bilibili Live Chat</h2>
+		</div>
+		<div class="panel-body">
+			<div class="input-group">
+				<input id="room" type="tel" class="form-control" placeholder="直播间号">
+				<span class="input-group-addon" style="border-left:0"><input id="withFace" type="checkbox" style="height:16px;vertical-align:middle">显示头像</span>
+				<span class="input-group-btn">
+					<button class="btn btn-default" type="button" onclick="goLiveChat()">Go!</button>
+				</span>
+			</div>
+		</div>
+	</div>
+	<script>
+		function goLiveChat() {
+			let room = document.getElementById("room").value;
+			let withFace = document.getElementById("withFace").checked;
+			if (/^[0-9]+$/.exec(room)) {
+				window.location.href = `./livechat.html#room=${room}${withFace?'&withFace=true':''}`;
+			}else{
+				document.getElementById("room").setAttribute('style', 'border-color:#ff8080;box-shadow:inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(255,0,0,.6)');
+			}
+		}
+	</script>
+</body>
+
+</html>

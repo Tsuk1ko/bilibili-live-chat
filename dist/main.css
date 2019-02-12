@@ -1,0 +1,91 @@
+@import url("https://fonts.lug.ustc.edu.cn/css?family=Changa One");
+@import url("https://fonts.lug.ustc.edu.cn/css?family=Imprima");
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	background-color: transparent;
+}
+
+@keyframes danmakuIn {
+	from {
+		transform: translatex(20px);
+		opacity: 0;
+	}
+
+	to {
+		transform: translatex(0);
+		opacity: 1;
+	}
+}
+
+#main {
+	padding: 4px 8px;
+	position: fixed;
+	overflow: hidden;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+}
+
+.danmaku-item {
+	padding: 4px;
+	display: flex;
+	flex-direction: row;
+	align-items: flex-start;
+	transition: all .5s;
+	animation: danmakuIn .5s;
+}
+
+.danmaku-item span {
+	text-shadow: -2px -2px #000000, -2px -1px #000000, -2px 0 #000000, -2px 1px #000000, -2px 2px #000000, -1px -2px #000000, -1px -1px #000000, -1px 0 #000000, -1px 1px #000000, -1px 2px #000000, 0 -2px #000000, 0 -1px #000000, 0 0 #000000, 0 1px #000000, 0 2px #000000, 1px -2px #000000, 1px -1px #000000, 1px 0 #000000, 1px 1px #000000, 1px 2px #000000, 2px -2px #000000, 2px -1px #000000, 2px 0 #000000, 2px 1px #000000, 2px 2px #000000;
+}
+
+.author-face {
+	width: 24px;
+	height: 24px;
+	border-radius: 24px;
+	margin-right: 6px;
+	display: inline-block;
+	background-size: cover;
+	flex: none;
+}
+
+.content {
+	overflow: initial;
+	align-self: center;
+}
+
+.author-name {
+	color: #8cd9ff;
+	font-family: "Changa One";
+	font-size: 20px;
+	line-height: 20px;
+	font-weight: 500;
+}
+
+.author-name.colon::after {
+	content: "：";
+	margin-left: 2px;
+}
+
+.message {
+	color: #fff;
+	font-family: "Imprima";
+	font-size: 18px;
+	line-height: 18px;
+}
+
+.gift {
+	color: #eb76ff;
+	font-family: "Changa One";
+	font-size: 20px;
+	line-height: 20px;
+	font-weight: 500;
+}
