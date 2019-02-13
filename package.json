@@ -4,12 +4,13 @@
   "description": "Similar to YouTube live chat but for Bilibili",
   "main": "src/index.js",
   "dependencies": {
-    "axios": "^0.18.0",
+    "axios": "^0.18.0"
+  },
+  "devDependencies": {
     "bilibili-danmaku-client": "^2.0.0",
     "jquery": "^3.3.1",
     "qs": "^6.6.0"
   },
-  "devDependencies": {},
   "scripts": {
     "start": "node faceService.js",
     "test": "echo \"Error: no test specified\" && exit 1"

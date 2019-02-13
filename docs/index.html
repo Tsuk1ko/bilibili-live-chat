@@ -24,18 +24,28 @@
 			width: 50%;
 			margin-top: 25vh;
 		}
+
+		@media screen and (max-width:1024px){
+			#main{
+				width: 80%;
+			}
+		}
 	</style>
 </head>
 
 <body>
 	<div id="main" class="panel panel-default">
 		<div class="panel-heading">
-			<h2 class="panel-title" style="font-size:30px">Bilibili Live Chat</h2>
+			<h2 class="panel-title" style="font-size:30px;display:inline-block;margin-right:10px">Bilibili Live Chat</h2>
+			<iframe src="https://ghbtns.com/github-btn.html?user=Tsuk1ko&repo=bilibili-live-chat&type=star&count=true&size=large" frameborder="0" scrolling="0" width="160px" height="30px" style="vertical-align:bottom"></iframe>
 		</div>
 		<div class="panel-body">
 			<div class="input-group">
 				<input id="room" type="tel" class="form-control" placeholder="直播间号">
-				<span class="input-group-addon" style="border-left:0"><input id="withFace" type="checkbox" style="height:16px;vertical-align:middle">显示头像</span>
+				<span class="input-group-addon" style="border-left:0">
+					<input id="withFace" type="checkbox" style="vertical-align:middle"><label for="withFace" style="margin-bottom:0;font-weight:400">显示头像</label>
+					<a href="https://github.com/Tsuk1ko/bilibili-live-chat#关于“显示头像”" target="_blank">(说明)</a>
+				</span>
 				<span class="input-group-btn">
 					<button class="btn btn-default" type="button" onclick="goLiveChat()">Go!</button>
 				</span>
