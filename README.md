@@ -25,3 +25,8 @@ npm start
 ## TODO
 - [ ] 礼物合并
 - [ ] 样式生成器
+
+## 感谢
+[std4453/bilibili-danmaku-client](https://github.com/std4453/bilibili-danmaku-client)
+
+如果有好的意见和建议，欢迎提出 :>
