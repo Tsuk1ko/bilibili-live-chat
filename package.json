@@ -1,6 +1,6 @@
 {
   "name": "bilibili-live-chat",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Similar to YouTube live chat but for Bilibili",
   "main": "src/index.js",
   "dependencies": {
@@ -12,8 +12,9 @@
     "qs": "^6.6.0"
   },
   "scripts": {
-    "start": "node faceService.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node src/faceService.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "webpack": "webpack -o docs/main.js"
   },
   "keywords": [
     "bilibili",
