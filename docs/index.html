@@ -13,18 +13,28 @@
 			width: 100%;
 			height: 100%;
 		}
-
 		body{
 			display: flex;
 			align-items: flex-start;
 			justify-content: center;
 		}
-
 		#main{
 			width: 50%;
 			margin-top: 25vh;
 		}
-
+		.form-control{
+			box-shadow: none !important;
+		}
+		input[type="checkbox"]{
+			vertical-align: middle;
+		}
+		label{
+			margin-bottom: 0;
+			font-weight: 400;
+		}
+		.input-group:not(:last-child) {
+			margin-bottom: 10px;
+		}
 		@media screen and (max-width:1024px){
 			#main{
 				width: 80%;
@@ -41,26 +51,43 @@
 		</div>
 		<div class="panel-body">
 			<div class="input-group">
-				<input id="room" type="tel" class="form-control" placeholder="直播间号">
+				<span class="input-group-addon">直播间号</span>
+				<input id="room" type="tel" class="form-control">
 				<span class="input-group-addon" style="border-left:0">
-					<input id="withFace" type="checkbox" style="vertical-align:middle"><label for="withFace" style="margin-bottom:0;font-weight:400">显示头像</label>
+					<input id="withFace" type="checkbox"><label for="withFace">显示头像</label>
 					<a href="https://github.com/Tsuk1ko/bilibili-live-chat#关于显示头像" target="_blank">(说明)</a>
 				</span>
 				<span class="input-group-btn">
-					<button class="btn btn-default" type="button" onclick="goLiveChat()">Go!</button>
+					<button class="btn btn-primary" type="button" onclick="goLiveChat()">Go!</button>
 				</span>
+			</div>
+			<div class="input-group">
+				<span class="input-group-addon"><input id="giftCombSwitch" type="checkbox"><label for="giftCombSwitch">礼物合并</label></span>
+				<input id="giftComb" type="tel" class="form-control" placeholder="合并统计等待时间，不填默认为5000">
+				<span class="input-group-addon" style="border-left:0">ms</span>
 			</div>
 		</div>
 	</div>
 	<script>
 		function goLiveChat() {
+			let pass = true;
 			let room = document.getElementById("room").value;
 			let withFace = document.getElementById("withFace").checked;
-			if (/^[0-9]+$/.exec(room)) {
-				window.location.href = `./livechat.html#room=${room}${withFace?'&withFace=true':''}`;
-			}else{
-				document.getElementById("room").setAttribute('style', 'border-color:#ff8080;box-shadow:inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(255,0,0,.6)');
+			let giftComb = document.getElementById("giftCombSwitch").checked;
+			let gcv;
+			if (!/^[0-9]+$/.exec(room)) {
+				document.getElementById("room").setAttribute('style', 'border-color:#ff8080');
+				pass = false;
 			}
+			if (giftComb) {
+				gcv = parseInt(document.getElementById("giftComb").value);
+				if (isNaN(gcv)) gcv = 5000;
+				if (gcv <= 0) {
+					document.getElementById("giftComb").setAttribute('style', 'border-color:#ff8080');
+					pass = false;
+				}
+			}
+			if (pass) window.location.href = `./livechat.html#room=${room}${withFace?'&withFace':''}${giftComb?'&giftComb='+gcv:''}`;
 		}
 	</script>
 </body>

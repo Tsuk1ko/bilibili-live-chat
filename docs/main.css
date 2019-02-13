@@ -75,6 +75,10 @@ body {
 	margin-left: 2px;
 }
 
+.author-name.owner {
+	color: #fff248;
+}
+
 .message {
 	color: #fff;
 	font-family: "Imprima";
