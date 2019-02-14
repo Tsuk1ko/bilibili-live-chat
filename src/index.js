@@ -7,6 +7,7 @@ $(document).ready(() => {
 	let {
 		room,
 		withFace,
+		aUID,
 		giftComb
 	} = Qs.parse(window.location.hash.substr(1));
 
@@ -19,6 +20,10 @@ $(document).ready(() => {
 
 	//头像
 	withFace = (typeof withFace != "undefined");
+
+	//UID
+	aUID = parseInt(aUID);
+	if (isNaN(aUID)) aUID = false;
 
 	//礼物合并
 	if (typeof giftComb == "undefined") giftComb = false;
@@ -48,7 +53,7 @@ $(document).ready(() => {
 		}
 	}) {
 		let face = withFace ? `<div class="author-face" style="background-image:url(http://127.0.0.1:23233/${uid})"></div>` : '';
-		queue.push(() => $main.append(`<div class="danmaku-item">${face}<div class="content"><span class="author-name${isOwner?' owner':''} colon">${name}</span><span class="message">${content}</span></div></div>`));
+		queue.push(() => $main.append(`<div class="danmaku-item">${face}<div class="content"><span class="author-name${aUID==uid?' anchor':''}${isOwner?' owner':''} colon">${name}</span><span class="message">${content}</span></div></div>`));
 	}
 
 	function onGift({

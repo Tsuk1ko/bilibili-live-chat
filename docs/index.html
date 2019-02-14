@@ -52,7 +52,7 @@
 		<div class="panel-body">
 			<div class="input-group">
 				<span class="input-group-addon">直播间号</span>
-				<input id="room" type="tel" class="form-control">
+				<input id="room" type="tel" class="form-control" placeholder="必填">
 				<span class="input-group-addon" style="border-left:0">
 					<input id="withFace" type="checkbox"><label for="withFace">显示头像</label>
 					<a href="https://github.com/Tsuk1ko/bilibili-live-chat#关于显示头像" target="_blank">(说明)</a>
@@ -62,33 +62,72 @@
 				</span>
 			</div>
 			<div class="input-group">
-				<span class="input-group-addon"><input id="giftCombSwitch" type="checkbox"><label for="giftCombSwitch">礼物合并</label></span>
-				<input id="giftComb" type="tel" class="form-control" placeholder="合并统计等待时间，不填默认为5000">
+				<span class="input-group-addon">主播 UID</span>
+				<input id="uid" type="tel" class="form-control" placeholder="选填，填写后自己的名字才能以主播专用的名字颜色标识">
+			</div>
+			<div class="input-group">
+				<span class="input-group-addon">礼物合并</span>
+				<input id="giftComb" type="tel" class="form-control" placeholder="选填，合并统计的等待时间（毫秒），不知道填多少可填5000，留空则关闭">
 				<span class="input-group-addon" style="border-left:0">ms</span>
 			</div>
 		</div>
 	</div>
 	<script>
-		function goLiveChat() {
-			let pass = true;
-			let room = document.getElementById("room").value;
-			let withFace = document.getElementById("withFace").checked;
-			let giftComb = document.getElementById("giftCombSwitch").checked;
-			let gcv;
-			if (!/^[0-9]+$/.exec(room)) {
-				document.getElementById("room").setAttribute('style', 'border-color:#ff8080');
-				pass = false;
+		let goLiveChat;
+
+		(function () {
+			let $room = document.getElementById("room");
+			let $withFace = document.getElementById("withFace");
+			let $uid = document.getElementById("uid");
+			let $giftComb = document.getElementById("giftComb");
+
+			let data = localStorage.getItem('data');
+			if (data) {
+				let {
+					room,
+					withFace,
+					uid,
+					giftComb
+				} = JSON.parse(data);
+				$room.value = room;
+				$withFace.checked = withFace;
+				$uid.value = uid;
+				$giftComb.value = giftComb;
 			}
-			if (giftComb) {
-				gcv = parseInt(document.getElementById("giftComb").value);
-				if (isNaN(gcv)) gcv = 5000;
-				if (gcv <= 0) {
-					document.getElementById("giftComb").setAttribute('style', 'border-color:#ff8080');
+
+			function warn(id) {
+				document.getElementById(id).setAttribute('style', 'border-color:#ff8080');
+			}
+
+			goLiveChat = function () {
+				let pass = true;
+				let room = $room.value;
+				let withFace = $withFace.checked;
+				let uid = $uid.value;
+				let giftComb = $giftComb.value;
+				if (!/^[1-9][0-9]*$/.exec(room)) {
+					warn('room');
 					pass = false;
 				}
+				if (uid.length > 0 && !/^[1-9][0-9]*$/.exec(uid)) {
+					warn('uid');
+					pass = false;
+				}
+				if (giftComb.length > 0 && !/^[1-9][0-9]*$/.exec(giftComb)) {
+					warn('giftComb');
+					pass = false;
+				}
+				if (pass) {
+					localStorage.setItem('data', JSON.stringify({
+						room,
+						withFace,
+						uid,
+						giftComb
+					}));
+					window.location.href = `./livechat.html#room=${room}${withFace?'&withFace':''}${uid.length>0?'&aUID='+uid:''}${giftComb.length>0?'&giftComb='+giftComb:''}`;
+				}
 			}
-			if (pass) window.location.href = `./livechat.html#room=${room}${withFace?'&withFace':''}${giftComb?'&giftComb='+gcv:''}`;
-		}
+		})();
 	</script>
 </body>
 
