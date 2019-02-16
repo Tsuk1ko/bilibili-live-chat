@@ -12,7 +12,8 @@
 ## 关于“显示头像”
 由于获取用户头像需要调用B站API，并且在浏览器中无法跨域，因此这个功能依赖于本地运行的服务，即项目中的`src/faceService.js`，启动该服务后即可勾选“显示头像”以展示弹幕发送者头像
 
-如果你是 Windows 用户，你可以直接使用 pkg 打包好的可执行文件，下载[这个可执行文件](https://github.com/Tsuk1ko/bilibili-live-chat/releases/download/v1.0.0/faceService.exe)然后双击运行即可
+如果你是 Windows 用户，你可以直接使用该打包好的可执行文件，下载后双击运行即可  
+下载点：[Github](https://github.com/Tsuk1ko/bilibili-live-chat/releases/download/v1.1.1/BilibiliFaceService.exe) / [OneDrive](https://files.lolico.moe/show/my%20project/BilibiliFaceService.exe)
 
 或者你也可以自行安装 Node.js，然后
 ```bash
