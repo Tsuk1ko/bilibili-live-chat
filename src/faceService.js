@@ -14,14 +14,23 @@ Http.createServer(async (request, response) => {
 
 	let uid = search[0];
 	if (faces[uid]) {
-		console.log(`[cached] ${uid}\t${faces[uid]}`);
+		console.log(` cache | ${fixed(uid,9)} | ${faces[uid]}`);
 	} else {
-		faces[uid] = await Axios.get(`http://api.bilibili.com/x/space/acc/info?mid=${uid}`).then(ret => ret.data.data.face);
-		console.log(`[new] ${uid}\t${faces[uid]}`);
+		faces[uid] = await Axios.get(`http://api.bilibili.com/x/space/acc/info?mid=${uid}`).then(ret => ret.data.data.face.replace('http://', 'https://'));
+		console.log(`  new  | ${fixed(uid,9)} | ${faces[uid]}`);
 	}
 
-	response.writeHead(301, {
+	response.writeHead(302, {
 		'Location': faces[uid]
 	});
 	response.end();
 }).listen(23233);
+
+function fixed(str, bit) {
+	let len = bit - str.length;
+	while (len > 0) {
+		str += ' ';
+		len--;
+	}
+	return str;
+}
