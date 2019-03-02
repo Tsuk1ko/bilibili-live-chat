@@ -1,11 +1,13 @@
 const DanmakuClient = require('bilibili-danmaku-client');
 const $ = require('jquery');
 const Qs = require('qs');
+const Axios = require('axios');
 
 $(document).ready(() => {
 	//参数
 	let {
 		room,
+		face,
 		withFace,
 		aUID,
 		giftComb
@@ -19,14 +21,16 @@ $(document).ready(() => {
 	}
 
 	//头像
-	withFace = (typeof withFace != "undefined");
+	if (typeof withFace != 'undefined') face = 'local';
+	if (typeof face == 'undefined') face = 'false';
+	let faceCache = {};
 
 	//UID
 	aUID = parseInt(aUID);
 	if (isNaN(aUID)) aUID = false;
 
 	//礼物合并
-	if (typeof giftComb == "undefined") giftComb = false;
+	if (typeof giftComb == 'undefined') giftComb = false;
 	else giftComb = parseInt(giftComb) || 5000;
 
 	const client = new DanmakuClient(room);
@@ -39,8 +43,9 @@ $(document).ready(() => {
 	//清除不需要显示的弹幕
 	setInterval(() => {
 		$('.danmaku-item').each(function () {
-			if ($(this).offset().top < 0) $(this).css('opacity', 0);
-			if ($(this).offset().top < -100) $(this).remove();
+			let $this = $(this);
+			if ($this.offset().top < 0) $this.css('opacity', 0);
+			if ($this.offset().top < -100) $this.remove();
 		});
 	}, 1000);
 
@@ -52,8 +57,32 @@ $(document).ready(() => {
 			isOwner
 		}
 	}) {
-		let face = withFace ? `<div class="author-face" style="background-image:url(http://127.0.0.1:23233/${uid})"></div>` : '';
-		queue.push(() => $main.append(`<div class="danmaku-item">${face}<div class="content"><span class="author-name${aUID==uid?' anchor':''}${isOwner?' owner':''} colon">${name}</span><span class="message">${content}</span></div></div>`));
+		let faceHTML = '';
+
+		switch (face) {
+			case 'local':
+				let faceURL = (typeof faceCache[uid] == 'string') ? faceCache[uid] : `http://127.0.0.1:23233/${uid}`;
+				faceHTML = `<div class="author-face" style="background-image:url(${faceURL})"></div>`;
+				break;
+			case 'online':
+				if (!faceCache[uid]) {
+					faceHTML = `<div class="author-face" author-uid="${uid}"></div>`;
+					let q = Qs.stringify({
+						url: `http://api.bilibili.com/x/space/acc/info?mid=${uid}`,
+						callback: '_cb'
+					});
+					faceCache[uid] = Axios.get(`https://json2jsonp.com/?${q}`).then(ret => {
+						let json = JSON.parse(/^_cb\((.*)\)$/.exec(ret.data)[1]);
+						faceCache[uid] = json.data.face;
+						$(`.author-face[author-uid="${uid}"]`).css('background-image', `url(${json.data.face})`);
+					});
+				}
+				if (typeof faceCache[uid] == 'string')
+					faceHTML = `<div class="author-face" style="background-image:url(${faceCache[uid]})"></div>`;
+				break;
+		}
+
+		queue.push(() => $main.append(`<div class="danmaku-item">${faceHTML}<div class="content"><span class="author-name${aUID==uid?' anchor':''}${isOwner?' owner':''} colon">${name}</span><span class="message">${content}</span></div></div>`));
 	}
 
 	function onGift({
@@ -65,7 +94,9 @@ $(document).ready(() => {
 			face
 		}
 	}) {
-		face = withFace ? `<div class="author-face" style="background-image:url(${face})"></div>` : '';
+		let faceHTML = (face == 'false') ? '' : `<div class="author-face" style="background-image:url(${face})"></div>`;
+
+		faceCache[uid] = face;
 
 		if (giftComb) {
 			if (!gifts[uid]) gifts[uid] = {};
@@ -80,7 +111,7 @@ $(document).ready(() => {
 			gifts[uid][gift.id].timeout = setTimeout(() => {
 				let total = gifts[uid][gift.id].total;
 				gifts[uid][gift.id] = false;
-				queue.push(() => $main.append(`<div class="danmaku-item">${face}<div class="content"><span class="message">感谢</span><span class="author-name">${name}</span><span class="message">赠送的${total}个</span><span class="gift">${gift.name}</span></div></div>`));
+				queue.push(() => $main.append(`<div class="danmaku-item">${faceHTML}<div class="content"><span class="message">感谢</span><span class="author-name">${name}</span><span class="message">赠送的${total}个</span><span class="gift">${gift.name}</span></div></div>`));
 			}, giftComb);
 		} else queue.push(() => $main.append(`<div class="danmaku-item">${face}<div class="content"><span class="message">感谢</span><span class="author-name">${name}</span><span class="message">赠送的${num}个</span><span class="gift">${gift.name}</span></div></div>`));
 	}

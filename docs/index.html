@@ -53,12 +53,19 @@
 			<div class="input-group">
 				<span class="input-group-addon">直播间号</span>
 				<input id="room" type="tel" class="form-control" placeholder="必填">
-				<span class="input-group-addon" style="border-left:0">
-					<input id="withFace" type="checkbox"><label for="withFace">显示头像</label>
-					<a href="https://github.com/Tsuk1ko/bilibili-live-chat#关于显示头像" target="_blank">(说明)</a>
-				</span>
 				<span class="input-group-btn">
 					<button class="btn btn-primary" type="button" onclick="goLiveChat()">Go!</button>
+				</span>
+			</div>
+			<div class="input-group">
+				<span class="input-group-addon">显示头像</span>
+				<select id="face" class="form-control">
+					<option id="face-false" value="false">不显示</option>
+					<option id="face-online" value="online">在线（实验性功能，不建议在弹幕量大的场景下使用）</option>
+					<option id="face-local" value="local">本地（需要启动本地服务）</option>
+				</select>
+				<span class="input-group-addon" style="border-left:0">
+					<a href="https://github.com/Tsuk1ko/bilibili-live-chat#关于显示头像" target="_blank" style="text-decoration:none!important">查看说明</a>
 				</span>
 			</div>
 			<div class="input-group">
@@ -77,7 +84,7 @@
 
 		(function () {
 			let $room = document.getElementById("room");
-			let $withFace = document.getElementById("withFace");
+			let $face = document.getElementById("face");
 			let $uid = document.getElementById("uid");
 			let $giftComb = document.getElementById("giftComb");
 
@@ -85,14 +92,14 @@
 			if (data) {
 				let {
 					room,
-					withFace,
+					face,
 					uid,
 					giftComb
 				} = JSON.parse(data);
-				$room.value = room;
-				$withFace.checked = withFace;
-				$uid.value = uid;
-				$giftComb.value = giftComb;
+				if(room) $room.value = room;
+				if(face) $face.selectedIndex = face;
+				if(uid) $uid.value = uid;
+				if(giftComb) $giftComb.value = giftComb;
 			}
 
 			function warn(id) {
@@ -102,7 +109,7 @@
 			goLiveChat = function () {
 				let pass = true;
 				let room = $room.value;
-				let withFace = $withFace.checked;
+				let face = $face.selectedOptions[0].value;
 				let uid = $uid.value;
 				let giftComb = $giftComb.value;
 				if (!/^[1-9][0-9]*$/.exec(room)) {
@@ -120,11 +127,11 @@
 				if (pass) {
 					localStorage.setItem('data', JSON.stringify({
 						room,
-						withFace,
+						face: $face.selectedIndex,
 						uid,
 						giftComb
 					}));
-					window.location.href = `./livechat.html#room=${room}${withFace?'&withFace':''}${uid.length>0?'&aUID='+uid:''}${giftComb.length>0?'&giftComb='+giftComb:''}`;
+					window.location.href = `./livechat.html#room=${room}&face=${face}${uid.length>0?'&aUID='+uid:''}${giftComb.length>0?'&giftComb='+giftComb:''}`;
 				}
 			}
 		})();
