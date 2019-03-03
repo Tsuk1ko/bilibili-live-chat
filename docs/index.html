@@ -70,12 +70,17 @@
 			</div>
 			<div class="input-group">
 				<span class="input-group-addon">主播 UID</span>
-				<input id="uid" type="tel" class="form-control" placeholder="选填，填写后自己的名字才能以主播专用的名字颜色标识">
+				<input id="uid" type="tel" class="form-control" placeholder="选填，不填则自动获取">
 			</div>
 			<div class="input-group">
 				<span class="input-group-addon">礼物合并</span>
-				<input id="giftComb" type="tel" class="form-control" placeholder="选填，合并统计的等待时间（毫秒），不知道填多少可填5000，留空则关闭">
-				<span class="input-group-addon" style="border-left:0">ms</span>
+				<input id="giftComb" type="number" min="0" step="1" class="form-control" placeholder="选填，合并统计的等待时间（毫秒），不知道填多少可填5000，留空则关闭">
+				<span class="input-group-addon" style="border-left:0">毫秒</span>
+			</div>
+			<div class="input-group">
+				<span class="input-group-addon">频率限制</span>
+				<input id="speed" type="number" min="1" step="1" class="form-control" placeholder="选填，限制弹幕展示频率（不包括礼物），若超出频率则会随机丢弃弹幕，留空则关闭">
+				<span class="input-group-addon" style="border-left:0">条/秒</span>
 			</div>
 		</div>
 	</div>
@@ -87,6 +92,7 @@
 			let $face = document.getElementById("face");
 			let $uid = document.getElementById("uid");
 			let $giftComb = document.getElementById("giftComb");
+			let $speed = document.getElementById("speed");
 
 			let data = localStorage.getItem('data');
 			if (data) {
@@ -94,24 +100,31 @@
 					room,
 					face,
 					uid,
-					giftComb
+					giftComb,
+					speed
 				} = JSON.parse(data);
 				if(room) $room.value = room;
 				if(face) $face.selectedIndex = face;
 				if(uid) $uid.value = uid;
 				if(giftComb) $giftComb.value = giftComb;
+				if(speed) $speed.value = speed;
 			}
 
 			function warn(id) {
 				document.getElementById(id).setAttribute('style', 'border-color:#ff8080');
 			}
 
-			goLiveChat = function () {
+			function qs(key, value){
+				return value.length>0 ? `&${key}=${value}` : '';
+			}
+
+			goLiveChat = () => {
 				let pass = true;
 				let room = $room.value;
 				let face = $face.selectedOptions[0].value;
 				let uid = $uid.value;
 				let giftComb = $giftComb.value;
+				let speed = $speed.value;
 				if (!/^[1-9][0-9]*$/.exec(room)) {
 					warn('room');
 					pass = false;
@@ -124,14 +137,19 @@
 					warn('giftComb');
 					pass = false;
 				}
+				if (speed.length > 0 && !/^[1-9][0-9]*$/.exec(speed)) {
+					warn('speed');
+					pass = false;
+				}
 				if (pass) {
 					localStorage.setItem('data', JSON.stringify({
 						room,
 						face: $face.selectedIndex,
 						uid,
-						giftComb
+						giftComb,
+						speed
 					}));
-					window.location.href = `./livechat.html#room=${room}&face=${face}${uid.length>0?'&aUID='+uid:''}${giftComb.length>0?'&giftComb='+giftComb:''}`;
+					window.location.href = `./livechat.html#room=${room}&face=${face}${qs('aUID',uid)}${qs('giftComb',giftComb)}${qs('speed',speed)}`;
 				}
 			}
 		})();

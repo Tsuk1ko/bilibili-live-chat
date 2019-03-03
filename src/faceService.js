@@ -16,7 +16,7 @@ Http.createServer(async (request, response) => {
 	if (faces[uid]) {
 		console.log(` cache | ${fixed(uid,9)} | ${faces[uid]}`);
 	} else {
-		faces[uid] = await Axios.get(`http://api.bilibili.com/x/space/acc/info?mid=${uid}`).then(ret => ret.data.data.face.replace('http://', 'https://'));
+		faces[uid] = await Axios.get(`https://api.bilibili.com/x/space/acc/info?mid=${uid}`).then(ret => ret.data.data.face.replace('http://', 'https://'));
 		console.log(`  new  | ${fixed(uid,9)} | ${faces[uid]}`);
 	}
 
