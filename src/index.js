@@ -84,6 +84,16 @@ $(document).ready(() => {
 		return url.replace('https://', 'http://');
 	}
 
+	function tryGetFace(uid, tryTimes) {
+		if (tryTimes <= 0) faceCache[uid] = null;
+		faceCache[uid] = json2jsonp2json(`https://api.bilibili.com/x/space/acc/info?mid=${uid}`).then(json => {
+			faceCache[uid] = https2http(json.data.face);
+			$(`.author-face[author-uid="${uid}"]`).css('background-image', `url(${faceCache[uid]})`);
+		}).catch(() => {
+			tryGetFace(uid, tryTimes - 1);
+		});
+	}
+
 	function onDanmaku({
 		content,
 		sender: {
@@ -102,10 +112,7 @@ $(document).ready(() => {
 					break;
 				case 'online':
 					if (!faceCache[uid]) {
-						faceCache[uid] = json2jsonp2json(`https://api.bilibili.com/x/space/acc/info?mid=${uid}`).then(json => {
-							faceCache[uid] = https2http(json.data.face);
-							$(`.author-face[author-uid="${uid}"]`).css('background-image', `url(${faceCache[uid]})`);
-						});
+						tryGetFace(uid, 5);
 					}
 					if (typeof faceCache[uid] == 'string')
 						faceHTML = `<div class="author-face" style="background-image:url(${faceCache[uid]})"></div>`;
