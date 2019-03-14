@@ -4,11 +4,30 @@ const Qs = require('qs');
 const Axios = require('axios');
 const shuffle = require('shuffle-array');
 
+function json2jsonp2json(url) {
+	let q = Qs.stringify({
+		url,
+		callback: '_cb'
+	});
+	return Axios.get(`https://json2jsonp.com/?${q}`).then(ret => JSON.parse(/^_cb\((.*)\)$/.exec(ret.data)[1]));
+}
+
+function faceGetTail(url) {
+	return /[^\/]+$/.exec(url)[0];
+}
+
+function faceObj(url) {
+	return {
+		t: faceGetTail(url),
+		d: Math.floor(new Date().getTime() / 86400000)
+	};
+}
+
 $(document).ready(() => {
 	//参数
 	let {
 		room,
-		face,
+		face: faceServer,
 		withFace,
 		aUID,
 		giftComb,
@@ -23,15 +42,40 @@ $(document).ready(() => {
 	}
 
 	//头像
-	if (typeof withFace != 'undefined') face = 'local';
-	if (typeof face == 'undefined') face = 'false';
-	let faceCache = {};
+	if (typeof withFace != 'undefined') faceServer = 'local';
+	if (typeof faceServer == 'undefined') faceServer = 'false';
+	let saveFaceRunning = false;
+	let faceCache = new Proxy(JSON.parse(localStorage.getItem('faces')) || {}, {
+		set: function (target, key, value, receiver) {
+			console.log(`[face] ${key.padEnd(9)} ${value.t}`);
+			if (!saveFaceRunning) saveFaceRunning = setTimeout(() => {
+				localStorage.setItem('faces', JSON.stringify(faceCache));
+				saveFaceRunning = false;
+			}, 10000);
+			return Reflect.set(target, key, value, receiver);
+		}
+	});
+	let facePromise = {};
+
+	function getFace(uid) {
+		let tail = faceCache[uid].t;
+		if (tail == 'noface.gif') return 'http://static.hdslb.com/images/member/noface.gif';
+		return `http://i${uid%4}.hdslb.com/bfs/face/${tail}`;
+	}
+
+	function existFace(uid) {
+		if (!faceCache[uid]) return false;
+		if (Math.floor(new Date().getTime() / 86400000) - faceCache[uid].d > 7) return false;
+		return true;
+	}
 
 	//UID
 	aUID = parseInt(aUID);
 	if (isNaN(aUID)) {
-		aUID = false;
-		json2jsonp2json(`https://api.live.bilibili.com/live_user/v1/UserInfo/get_anchor_in_room?roomid=${room}`).then(({
+		let anchors = JSON.parse(localStorage.getItem('anchors'));
+		if (!anchors) anchors = {};
+		if (anchors[room]) aUID = anchors[room];
+		else json2jsonp2json(`https://api.live.bilibili.com/live_user/v1/UserInfo/get_anchor_in_room?roomid=${room}`).then(({
 			data: {
 				info: {
 					face,
@@ -40,7 +84,10 @@ $(document).ready(() => {
 			}
 		}) => {
 			aUID = uid;
-			faceCache[uid] = https2http(face);
+			anchors[room] = uid;
+			console.log(`[anchor] ${uid}`);
+			localStorage.setItem('anchors', JSON.stringify(anchors));
+			faceCache[uid] = faceObj(face);
 		});
 	}
 
@@ -72,24 +119,14 @@ $(document).ready(() => {
 		});
 	}, 1000);
 
-	function json2jsonp2json(url) {
-		let q = Qs.stringify({
-			url,
-			callback: '_cb'
-		});
-		return Axios.get(`https://json2jsonp.com/?${q}`).then(ret => JSON.parse(/^_cb\((.*)\)$/.exec(ret.data)[1]));
-	}
-
-	function https2http(url) {
-		return url.replace('https://', 'http://');
-	}
-
 	function tryGetFace(uid, tryTimes) {
-		if (tryTimes <= 0) faceCache[uid] = null;
-		faceCache[uid] = json2jsonp2json(`https://api.bilibili.com/x/space/acc/info?mid=${uid}`).then(json => {
-			faceCache[uid] = https2http(json.data.face);
-			$(`.author-face[author-uid="${uid}"]`).css('background-image', `url(${faceCache[uid]})`);
+		if (facePromise[uid]) return;
+		if (tryTimes <= 0) facePromise[uid] = null;
+		facePromise[uid] = json2jsonp2json(`https://api.bilibili.com/x/space/acc/info?mid=${uid}`).then(json => {
+			faceCache[uid] = faceObj(json.data.face);
+			$(`.author-face[author-uid="${uid}"]`).css('background-image', `url(${getFace(uid)})`);
 		}).catch(() => {
+			facePromise[uid] = null;
 			tryGetFace(uid, tryTimes - 1);
 		});
 	}
@@ -105,19 +142,18 @@ $(document).ready(() => {
 		danmakuQueue.push(() => {
 			let faceHTML = '';
 
-			switch (face) {
+			switch (faceServer) {
 				case 'local':
 					let faceURL = (typeof faceCache[uid] == 'string') ? faceCache[uid] : `http://127.0.0.1:23233/${uid}`;
 					faceHTML = `<div class="author-face" style="background-image:url(${faceURL})"></div>`;
 					break;
 				case 'online':
-					if (!faceCache[uid]) {
+					if (existFace(uid)) {
+						faceHTML = `<div class="author-face" style="background-image:url(${getFace(uid)})"></div>`;
+					} else {
 						tryGetFace(uid, 5);
-					}
-					if (typeof faceCache[uid] == 'string')
-						faceHTML = `<div class="author-face" style="background-image:url(${faceCache[uid]})"></div>`;
-					else
 						faceHTML = `<div class="author-face" author-uid="${uid}"></div>`;
+					}
 					break;
 			}
 
@@ -131,11 +167,11 @@ $(document).ready(() => {
 		sender: {
 			uid,
 			name,
-			face: faceURL
+			face
 		}
 	}) {
-		faceCache[uid] = https2http(faceURL);
-		let faceHTML = (face == 'false') ? '' : `<div class="author-face" style="background-image:url(${faceCache[uid]})"></div>`;
+		faceCache[uid] = faceObj(face);
+		let faceHTML = (faceServer == 'false') ? '' : `<div class="author-face" style="background-image:url(${getFace(uid)})"></div>`;
 
 		if (giftComb) {
 			if (!gifts[uid]) gifts[uid] = {};

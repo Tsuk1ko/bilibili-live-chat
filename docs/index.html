@@ -94,7 +94,8 @@
 			let $giftComb = document.getElementById("giftComb");
 			let $speed = document.getElementById("speed");
 
-			let data = localStorage.getItem('data');
+			let data = localStorage.getItem('data') || localStorage.getItem('index');
+
 			if (data) {
 				let {
 					room,
@@ -142,13 +143,14 @@
 					pass = false;
 				}
 				if (pass) {
-					localStorage.setItem('data', JSON.stringify({
+					localStorage.setItem('index', JSON.stringify({
 						room,
 						face: $face.selectedIndex,
 						uid,
 						giftComb,
 						speed
 					}));
+					localStorage.removeItem('data');
 					window.location.href = `./livechat.html#room=${room}&face=${face}${qs('aUID',uid)}${qs('giftComb',giftComb)}${qs('speed',speed)}`;
 				}
 			}
