@@ -1,6 +1,6 @@
 {
   "name": "bilibili-live-chat",
-  "version": "1.2.3",
+  "version": "1.3.0",
   "description": "Similar to YouTube live chat but for Bilibili",
   "main": "src/index.js",
   "dependencies": {
