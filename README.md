@@ -2,9 +2,11 @@
 
 ![Preview](https://i.loli.net/2019/02/13/5c638e21ad91a.gif)
 
-这是一个非常简单的，仿 YouTube Live Chat 的 Bilibili 直播弹幕在线展示器
+这是一个非常简单的，无后端仿 YouTube Live Chat 的 Bilibili 直播弹幕在线展示器
 
 主要用于 OBS，为的是在低功能需求的情况下，不依靠任何第三方软件实现弹幕/礼物展示
+
+项目成品直接部署在 Github Pages
 
 ## 使用步骤
 
