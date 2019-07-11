@@ -30,6 +30,14 @@ body {
 	right: 0;
 }
 
+.op-0 {
+	opacity: 0;
+}
+
+.danmaku-placeholder {
+	height: 100%;
+}
+
 .danmaku-item {
 	padding: 4px;
 	display: flex;

@@ -1,162 +1,173 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
-
-<head>
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<link rel="icon" href="https://www.bilibili.com/favicon.ico" type="image/x-icon" />
-	<link rel="shortcut icon" href="https://www.bilibili.com/favicon.ico" type="image/x-icon" />
-	<title>Bilibili Live Chat</title>
-	<link href="https://cdn.bootcss.com/twitter-bootstrap/3.4.0/css/bootstrap.min.css" rel="stylesheet">
-	<style>
-		html,body{
-			width: 100%;
-			height: 100%;
-		}
-		body{
-			display: flex;
-			align-items: flex-start;
-			justify-content: center;
-		}
-		#main{
-			width: 50%;
-			margin-top: 25vh;
-		}
-		.form-control{
-			box-shadow: none !important;
-		}
-		input[type="checkbox"]{
-			vertical-align: middle;
-		}
-		label{
-			margin-bottom: 0;
-			font-weight: 400;
-		}
-		.input-group:not(:last-child) {
-			margin-bottom: 10px;
-		}
-		@media screen and (max-width:1024px){
-			#main{
-				width: 80%;
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="icon" href="https://www.bilibili.com/favicon.ico" type="image/x-icon" />
+		<link rel="shortcut icon" href="https://www.bilibili.com/favicon.ico" type="image/x-icon" />
+		<title>Bilibili Live Chat</title>
+		<link href="https://cdn.bootcss.com/twitter-bootstrap/3.4.0/css/bootstrap.min.css" rel="stylesheet" />
+		<style>
+			html,
+			body {
+				width: 100%;
+				height: 100%;
 			}
-		}
-	</style>
-</head>
+			body {
+				display: flex;
+				align-items: flex-start;
+				justify-content: center;
+			}
+			#main {
+				width: 50%;
+				margin-top: 25vh;
+			}
+			.form-control {
+				box-shadow: none !important;
+			}
+			input[type='checkbox'] {
+				vertical-align: middle;
+			}
+			label {
+				margin-bottom: 0;
+				font-weight: 400;
+			}
+			.input-group:not(:last-child) {
+				margin-bottom: 10px;
+			}
+			@media screen and (max-width: 1024px) {
+				#main {
+					width: 80%;
+				}
+			}
+		</style>
+	</head>
 
-<body>
-	<div id="main" class="panel panel-default">
-		<div class="panel-heading">
-			<h2 class="panel-title" style="font-size:30px;display:inline-block;margin-right:10px">Bilibili Live Chat</h2>
-			<iframe src="https://ghbtns.com/github-btn.html?user=Tsuk1ko&repo=bilibili-live-chat&type=star&count=true&size=large" frameborder="0" scrolling="0" width="160px" height="30px" style="vertical-align:bottom"></iframe>
+	<body>
+		<div id="main" class="panel panel-default">
+			<div class="panel-heading">
+				<h2 class="panel-title" style="font-size:30px;display:inline-block;margin-right:10px">Bilibili Live Chat</h2>
+				<iframe src="https://ghbtns.com/github-btn.html?user=Tsuk1ko&repo=bilibili-live-chat&type=star&count=true&size=large" frameborder="0" scrolling="0" width="160px" height="30px" style="vertical-align:bottom"></iframe>
+			</div>
+			<div class="panel-body">
+				<div class="input-group">
+					<span class="input-group-addon">直播间号</span>
+					<input id="room" type="tel" class="form-control" placeholder="必填" />
+					<span class="input-group-btn">
+						<button class="btn btn-primary" type="button" onclick="goLiveChat()">Go!</button>
+					</span>
+				</div>
+				<div class="input-group">
+					<span class="input-group-addon">显示头像</span>
+					<select id="face" class="form-control">
+						<option value="false">不显示</option>
+						<option value="local">本地（需要启动本地服务）</option>
+						<option value="online">在线 api.imjad.cn（不建议在弹幕量大的场景下使用）</option>
+						<option value="online2">在线 json2jsonp.com（不建议在弹幕量大的场景下使用）</option>
+					</select>
+					<span class="input-group-addon" style="border-left:0">
+						<a href="https://github.com/Tsuk1ko/bilibili-live-chat#关于显示头像" target="_blank" style="text-decoration:none!important">查看说明</a>
+					</span>
+				</div>
+				<div class="input-group">
+					<span class="input-group-addon">弹幕排列</span>
+					<select id="display" class="form-control">
+						<option value="top">从顶部</option>
+						<option value="bottom">自底部</option>
+					</select>
+				</div>
+				<div class="input-group">
+					<span class="input-group-addon">弹幕停留</span>
+					<input id="stay" type="number" min="0" class="form-control" placeholder="选填，弹幕停留显示的时间（秒），启用时建议将弹幕排列设置为“自底部”" />
+					<span class="input-group-addon" style="border-left:0">秒</span>
+				</div>
+				<div class="input-group">
+					<span class="input-group-addon">礼物合并</span>
+					<input id="giftComb" type="number" min="0" step="1" class="form-control" placeholder="选填，合并统计的等待时间（毫秒），不知道填多少可填5000，留空则关闭" />
+					<span class="input-group-addon" style="border-left:0">毫秒</span>
+				</div>
+				<div class="input-group">
+					<span class="input-group-addon">频率限制</span>
+					<input id="speed" type="number" min="1" step="1" class="form-control" placeholder="选填，限制弹幕展示频率（不包括礼物），若超出频率则会随机丢弃弹幕，留空则关闭" />
+					<span class="input-group-addon" style="border-left:0">条/秒</span>
+				</div>
+			</div>
 		</div>
-		<div class="panel-body">
-			<div class="input-group">
-				<span class="input-group-addon">直播间号</span>
-				<input id="room" type="tel" class="form-control" placeholder="必填">
-				<span class="input-group-btn">
-					<button class="btn btn-primary" type="button" onclick="goLiveChat()">Go!</button>
-				</span>
-			</div>
-			<div class="input-group">
-				<span class="input-group-addon">显示头像</span>
-				<select id="face" class="form-control">
-					<option value="false">不显示</option>
-					<option value="local">本地（需要启动本地服务）</option>
-					<option value="online">[实验性] 在线 api.imjad.cn（不建议在弹幕量大的场景下使用）</option>
-					<option value="online2">[实验性] 在线 json2jsonp.com（不建议在弹幕量大的场景下使用）</option>
-				</select>
-				<span class="input-group-addon" style="border-left:0">
-					<a href="https://github.com/Tsuk1ko/bilibili-live-chat#关于显示头像" target="_blank" style="text-decoration:none!important">查看说明</a>
-				</span>
-			</div>
-			<div class="input-group">
-				<span class="input-group-addon">主播 UID</span>
-				<input id="uid" type="tel" class="form-control" placeholder="选填，不填则自动获取">
-			</div>
-			<div class="input-group">
-				<span class="input-group-addon">礼物合并</span>
-				<input id="giftComb" type="number" min="0" step="1" class="form-control" placeholder="选填，合并统计的等待时间（毫秒），不知道填多少可填5000，留空则关闭">
-				<span class="input-group-addon" style="border-left:0">毫秒</span>
-			</div>
-			<div class="input-group">
-				<span class="input-group-addon">频率限制</span>
-				<input id="speed" type="number" min="1" step="1" class="form-control" placeholder="选填，限制弹幕展示频率（不包括礼物），若超出频率则会随机丢弃弹幕，留空则关闭">
-				<span class="input-group-addon" style="border-left:0">条/秒</span>
-			</div>
-		</div>
-	</div>
-	<script>
-		let goLiveChat;
+		<script>
+			let goLiveChat;
 
-		(function () {
-			let $room = document.getElementById("room");
-			let $face = document.getElementById("face");
-			let $uid = document.getElementById("uid");
-			let $giftComb = document.getElementById("giftComb");
-			let $speed = document.getElementById("speed");
+			(function() {
+				let $room = document.getElementById('room');
+				let $face = document.getElementById('face');
+				let $giftComb = document.getElementById('giftComb');
+				let $speed = document.getElementById('speed');
+				let $display = document.getElementById('display');
+				let $stay = document.getElementById('stay');
 
-			let data = localStorage.getItem('data') || localStorage.getItem('index');
+				let data = localStorage.getItem('data') || localStorage.getItem('index');
 
-			if (data) {
-				let {
-					room,
-					face,
-					uid,
-					giftComb,
-					speed
-				} = JSON.parse(data);
-				if(room) $room.value = room;
-				if(face) $face.selectedIndex = face;
-				if(uid) $uid.value = uid;
-				if(giftComb) $giftComb.value = giftComb;
-				if(speed) $speed.value = speed;
-			}
-
-			function warn(id) {
-				document.getElementById(id).setAttribute('style', 'border-color:#ff8080');
-			}
-
-			function qs(key, value){
-				return value.length>0 ? `&${key}=${value}` : '';
-			}
-
-			goLiveChat = () => {
-				let pass = true;
-				let room = $room.value;
-				let face = $face.selectedOptions[0].value;
-				let uid = $uid.value;
-				let giftComb = $giftComb.value;
-				let speed = $speed.value;
-				if (!/^[1-9][0-9]*$/.exec(room)) {
-					warn('room');
-					pass = false;
+				if (data) {
+					let { room, face, giftComb, speed, display, stay } = JSON.parse(data);
+					if (room) $room.value = room;
+					if (face) $face.selectedIndex = face;
+					if (giftComb) $giftComb.value = giftComb;
+					if (speed) $speed.value = speed;
+					if (display) $display.selectedIndex = display;
+					if (stay) $stay.value = stay;
 				}
-				if (uid.length > 0 && !/^[1-9][0-9]*$/.exec(uid)) {
-					warn('uid');
-					pass = false;
-				}
-				if (giftComb.length > 0 && !/^[1-9][0-9]*$/.exec(giftComb)) {
-					warn('giftComb');
-					pass = false;
-				}
-				if (speed.length > 0 && !/^[1-9][0-9]*$/.exec(speed)) {
-					warn('speed');
-					pass = false;
-				}
-				if (pass) {
-					localStorage.setItem('index', JSON.stringify({
-						room,
-						face: $face.selectedIndex,
-						uid,
-						giftComb,
-						speed
-					}));
-					localStorage.removeItem('data');
-					window.location.href = `./livechat.html#room=${room}&face=${face}${qs('aUID',uid)}${qs('giftComb',giftComb)}${qs('speed',speed)}`;
-				}
-			}
-		})();
-	</script>
-</body>
 
+				function warn(id) {
+					document.getElementById(id).setAttribute('style', 'border-color:#ff8080');
+				}
+
+				function qs(key, value) {
+					return value.length > 0 ? `&${key}=${value}` : '';
+				}
+
+				goLiveChat = () => {
+					let pass = true;
+					let room = $room.value;
+					let face = $face.selectedOptions[0].value;
+					let giftComb = $giftComb.value;
+					let speed = $speed.value;
+					let display = $display.selectedOptions[0].value;
+					let stay = $stay.value;
+
+					if (!/^[1-9][0-9]*$/.exec(room)) {
+						warn('room');
+						pass = false;
+					}
+					if (giftComb.length > 0 && !/^[1-9][0-9]*$/.exec(giftComb)) {
+						warn('giftComb');
+						pass = false;
+					}
+					if (speed.length > 0 && !/^[1-9][0-9]*$/.exec(speed)) {
+						warn('speed');
+						pass = false;
+					}
+					if (stay.length > 0 && !/^(([0-9]+\.)|[1-9])[0-9]*$/.exec(stay)) {
+						warn('stay');
+						pass = false;
+					}
+
+					console.log(stay)
+
+					if (pass) {
+						localStorage.setItem(
+							'index',
+							JSON.stringify({
+								room,
+								face: $face.selectedIndex,
+								giftComb,
+								speed,
+								display: $display.selectedIndex,
+								stay
+							})
+						);
+						window.location.href = `./livechat.html#room=${room}&face=${face}&display=${display}${qs('giftComb', giftComb)}${qs('speed', speed)}${qs('stay', stay)}`;
+					}
+				};
+			})();
+		</script>
+	</body>
 </html>
