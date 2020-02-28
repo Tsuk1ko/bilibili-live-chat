@@ -25,12 +25,18 @@
 
 ### 本地
 
-因此这个功能依赖于本地运行的服务，即项目中的`src/faceService.js`，启动该服务后即可勾选“显示头像”以展示弹幕发送者头像
+这个功能依赖于本地运行的服务，即项目中的`src/faceService.js`
 
-如果你是 Windows 用户，你可以直接使用该打包好的可执行文件，下载后双击运行即可，可最小化到任务栏托盘  
+-------------------
+
+如果你是 Windows 用户，你可以直接使用打包好的可执行文件而不必 clone 本项目，下载后双击运行即可，可最小化到任务栏托盘  
 下载点：[Github](https://github.com/Tsuk1ko/bilibili-live-chat/releases/download/v1.1.1/BilibiliFaceService.exe) / [OneDrive](https://files.lolico.moe/show/my%20project/BilibiliFaceService.exe)
 
-或者你也可以自行安装 Node.js，然后
+该可执行文件的本质是一个自解压程序，执行后会将一个 C# 写的简单 GUI 程序和 pkg 打包`src/faceService.js`生成的程序解压到 Windows 临时目录并执行，因为是临时花了个把小时现学 C# 写的一个辅助性质的 GUI 因此没有开源，如果你对此不放心你可以使用下面所述的方式
+
+-------------------
+
+你也可以自行安装 Node.js，然后
 
 ```bash
 git clone https://github.com/Tsuk1ko/bilibili-live-chat.git
