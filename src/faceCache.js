@@ -70,10 +70,15 @@ function getFaceByImjad(uid) {
 	tryGetFace(uid, 5, () => Axios.get(`https://api.imjad.cn/bilibili/v2/?get=space&vmid=${uid}&pagesize=1`).then(ret => ret.data.data.card.face));
 }
 
+function getFaceDirectly(uid) {
+	tryGetFace(uid, 5, () => Axios.get(`https://api.bilibili.com/x/space/acc/info?mid=${uid}`).then(json => json.data.face));
+}
+
 module.exports = {
 	getFace,
 	setFace,
 	existFace,
 	getFaceByJson2jsonp,
-	getFaceByImjad
+	getFaceByImjad,
+	getFaceDirectly
 };

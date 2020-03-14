@@ -10,14 +10,19 @@
 
 ## 使用步骤
 
-1. 打开 [bilivechat.moe.best](https://bilivechat.moe.best/)
+1. 打开 [bilivechat.moe.best](https://bilivechat.moe.best/) ；或下载 `docs` 目录下的所有文件后，用浏览器直接打开 `docs/index.html`
 2. 输入房间号，填写设置项，点击“Go!”，然后复制新页面的地址
 3. 在 OBS 中添加“浏览器”来源，将地址粘贴到“URL”处，根据自己需要调整宽高数值
 4. Enjoy~
 
 ## 关于“显示头像”
 
-由于获取用户头像需要调用B站API，在浏览器中无法直接跨域，有两种解决方案
+由于获取用户头像需要调用B站API，在浏览器中无法直接跨域，有三种解决方案
+
+### 直接访问
+
+支持任何基于 Chromium 的浏览器（包括 OBS Browser），通过添加 `--disable-web-security` 启动参数来允许跨域，但**不建议在任何常用浏览器中允许跨域**
+其他浏览器请自行搜索开启 CORS 的方法
 
 ### 在线
 
@@ -29,7 +34,7 @@
 
 -------------------
 
-如果你是 Windows 用户，你可以直接使用打包好的可执行文件而不必 clone 本项目，下载后双击运行即可，可最小化到任务栏托盘  
+如果你是 Windows 用户，你可以直接使用打包好的可执行文件而不必 clone 本项目，下载后双击运行即可，可最小化到任务栏托盘
 下载点：[Github](https://github.com/Tsuk1ko/bilibili-live-chat/releases/download/v1.1.1/BilibiliFaceService.exe) / [OneDrive](https://files.lolico.moe/show/my%20project/BilibiliFaceService.exe)
 
 该可执行文件的本质是一个自解压程序，执行后会将一个 C# 写的简单 GUI 程序和 pkg 打包`src/faceService.js`生成的程序解压到 Windows 临时目录并执行，因为是临时花了个把小时现学 C# 写的一个辅助性质的 GUI 因此没有开源，如果你对此不放心你可以使用下面所述的方式
