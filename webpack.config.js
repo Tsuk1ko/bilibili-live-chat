@@ -1,5 +1,7 @@
 module.exports = {
 	externals: {
-		jquery: 'jQuery'
-	}
+		jquery: 'jQuery',
+		axios: 'axios',
+		qs: 'Qs',
+	},
 };

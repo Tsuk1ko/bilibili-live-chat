@@ -6,41 +6,8 @@
 		<link rel="icon" href="https://www.bilibili.com/favicon.ico" type="image/x-icon" />
 		<link rel="shortcut icon" href="https://www.bilibili.com/favicon.ico" type="image/x-icon" />
 		<title>Bilibili Live Chat</title>
-		<link href="https://cdn.bootcss.com/twitter-bootstrap/3.4.0/css/bootstrap.min.css" rel="stylesheet" />
-		<style>
-			html,
-			body {
-				width: 100%;
-				height: 100%;
-			}
-			body {
-				display: flex;
-				align-items: flex-start;
-				justify-content: center;
-			}
-			#main {
-				width: 50%;
-				margin-top: 25vh;
-			}
-			.form-control {
-				box-shadow: none !important;
-			}
-			input[type='checkbox'] {
-				vertical-align: middle;
-			}
-			label {
-				margin-bottom: 0;
-				font-weight: 400;
-			}
-			.input-group:not(:last-child) {
-				margin-bottom: 10px;
-			}
-			@media screen and (max-width: 1024px) {
-				#main {
-					width: 80%;
-				}
-			}
-		</style>
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
+		<style>body,html{width:100%;height:100%}body{display:flex;align-items:flex-start;justify-content:center}#main{width:50%;margin-top:25vh}.form-control{box-shadow:none!important}input[type=checkbox]{vertical-align:middle}label{margin-bottom:0;font-weight:400}.input-group:not(:last-child){margin-bottom:10px}@media screen and (max-width:1024px){#main{width:80%}}</style>
 	</head>
 
 	<body>
@@ -61,10 +28,10 @@
 					<span class="input-group-addon">显示头像</span>
 					<select id="face" class="form-control">
 						<option value="false">不显示</option>
-						<option value="direct">直接访问（需要添加 OBS 启动参数 --disable-web-security）</option>
+						<option value="direct">跨域（浏览器或 OBS 需添加启动参数 --disable-web-security）</option>
 						<option value="local">本地（需要启动本地服务）</option>
 						<option value="online">在线 api.imjad.cn（不建议在弹幕量大的场景下使用）</option>
-						<option value="online2">在线 json2jsonp.com（不建议在弹幕量大的场景下使用）</option>
+						<option value="online2">在线 json2jsonp.com（国内较慢，不建议在弹幕量大的场景下使用）</option>
 					</select>
 					<span class="input-group-addon" style="border-left:0">
 						<a href="https://github.com/Tsuk1ko/bilibili-live-chat#关于显示头像" target="_blank" style="text-decoration:none!important">查看说明</a>
@@ -94,81 +61,6 @@
 				</div>
 			</div>
 		</div>
-		<script>
-			let goLiveChat;
-
-			(function() {
-				let $room = document.getElementById('room');
-				let $face = document.getElementById('face');
-				let $giftComb = document.getElementById('giftComb');
-				let $speed = document.getElementById('speed');
-				let $display = document.getElementById('display');
-				let $stay = document.getElementById('stay');
-
-				let data = localStorage.getItem('data') || localStorage.getItem('index');
-
-				if (data) {
-					let { room, face, giftComb, speed, display, stay } = JSON.parse(data);
-					if (room) $room.value = room;
-					if (face) $face.selectedIndex = face;
-					if (giftComb) $giftComb.value = giftComb;
-					if (speed) $speed.value = speed;
-					if (display) $display.selectedIndex = display;
-					if (stay) $stay.value = stay;
-				}
-
-				function warn(id) {
-					document.getElementById(id).setAttribute('style', 'border-color:#ff8080');
-				}
-
-				function qs(key, value) {
-					return value.length > 0 ? `&${key}=${value}` : '';
-				}
-
-				goLiveChat = () => {
-					let pass = true;
-					let room = $room.value;
-					let face = $face.selectedOptions[0].value;
-					let giftComb = $giftComb.value;
-					let speed = $speed.value;
-					let display = $display.selectedOptions[0].value;
-					let stay = $stay.value;
-
-					if (!/^[1-9][0-9]*$/.exec(room)) {
-						warn('room');
-						pass = false;
-					}
-					if (giftComb.length > 0 && !/^[1-9][0-9]*$/.exec(giftComb)) {
-						warn('giftComb');
-						pass = false;
-					}
-					if (speed.length > 0 && !/^[1-9][0-9]*$/.exec(speed)) {
-						warn('speed');
-						pass = false;
-					}
-					if (stay.length > 0 && !/^(([0-9]+\.)|[1-9])[0-9]*$/.exec(stay)) {
-						warn('stay');
-						pass = false;
-					}
-
-					console.log(stay)
-
-					if (pass) {
-						localStorage.setItem(
-							'index',
-							JSON.stringify({
-								room,
-								face: $face.selectedIndex,
-								giftComb,
-								speed,
-								display: $display.selectedIndex,
-								stay
-							})
-						);
-						window.location.href = `./livechat.html#room=${room}&face=${face}&display=${display}${qs('giftComb', giftComb)}${qs('speed', speed)}${qs('stay', stay)}`;
-					}
-				};
-			})();
-		</script>
+		<script>let goLiveChat;(function(){let $room=document.getElementById("room");let $face=document.getElementById("face");let $giftComb=document.getElementById("giftComb");let $speed=document.getElementById("speed");let $display=document.getElementById("display");let $stay=document.getElementById("stay");let data=localStorage.getItem("data")||localStorage.getItem("index");if(data){let{room:room,face:face,giftComb:giftComb,speed:speed,display:display,stay:stay}=JSON.parse(data);if(room)$room.value=room;if(face)$face.selectedIndex=face;if(giftComb)$giftComb.value=giftComb;if(speed)$speed.value=speed;if(display)$display.selectedIndex=display;if(stay)$stay.value=stay}function warn(id){document.getElementById(id).setAttribute("style","border-color:#ff8080")}function qs(key,value){return value.length>0?`&${key}=${value}`:""}goLiveChat=()=>{let pass=true;const room=$room.value;const face=$face.selectedOptions[0].value;const giftComb=$giftComb.value;const speed=$speed.value;const display=$display.selectedOptions[0].value;const stay=$stay.value;if(!/^[1-9][0-9]*$/.exec(room)){warn("room");pass=false}if(giftComb.length>0&&!/^[1-9][0-9]*$/.exec(giftComb)){warn("giftComb");pass=false}if(speed.length>0&&!/^[1-9][0-9]*$/.exec(speed)){warn("speed");pass=false}if(stay.length>0&&!/^(([0-9]+\.)|[1-9])[0-9]*$/.exec(stay)){warn("stay");pass=false}console.log(stay);if(pass){localStorage.setItem("index",JSON.stringify({room:room,face:$face.selectedIndex,giftComb:giftComb,speed:speed,display:$display.selectedIndex,stay:stay}));window.location.href=`./livechat.html#room=${room}&face=${face}&display=${display}${qs("giftComb",giftComb)}${qs("speed",speed)}${qs("stay",stay)}`}}})();</script>
 	</body>
 </html>
