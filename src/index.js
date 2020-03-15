@@ -121,6 +121,9 @@ function onDanmaku({
 						case 'online2':
 							FaceCache.getFaceByJson2jsonp(uid);
 							break;
+						case 'direct':
+							FaceCache.getFaceDirectly(uid);
+							break;
 					}
 			}
 		}
