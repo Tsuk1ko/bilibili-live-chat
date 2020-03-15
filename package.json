@@ -1,22 +1,19 @@
 {
   "name": "bilibili-live-chat",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "description": "Similar to YouTube live chat but for Bilibili",
   "main": "src/index.js",
   "dependencies": {
-    "axios": "^0.19.0"
-  },
-  "devDependencies": {
+    "axios": "^0.19.2",
     "bilibili-danmaku-client": "^2.0.0",
     "jquery": "^3.4.1",
-    "qs": "^6.7.0",
+    "qs": "^6.9.1",
     "shuffle-array": "^1.0.1"
   },
   "scripts": {
     "start": "node src/faceService.js",
-    "test": "node test/index.js",
-    "webpack": "webpack -o docs/main.js --mode production",
-    "pkg": "pkg src/faceService.js -t node10-win-x86"
+    "webpack": "webpack -o docs/main.min.js --mode production",
+    "pkg": "pkg src/faceService.js -t latest-win-x86"
   },
   "keywords": [
     "bilibili",
