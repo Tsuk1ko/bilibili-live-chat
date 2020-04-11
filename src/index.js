@@ -1,4 +1,4 @@
-const DanmakuClient = require('bilibili-danmaku-client');
+const DanmakuClient = require('@tsuk1ko/bilibili-danmaku-client');
 const $ = require('jquery');
 const Qs = require('qs');
 const Axios = require('axios');
@@ -41,8 +41,9 @@ if (isNaN(aUID)) {
 	let anchors = JSON.parse(localStorage.getItem('anchors'));
 	if (!anchors) anchors = {};
 	if (anchors[room]) aUID = anchors[room];
-	else
-		json2jsonp2json(`https://api.live.bilibili.com/live_user/v1/UserInfo/get_anchor_in_room?roomid=${room}`).then(
+	else {
+		const getAnchorApi = `https://api.live.bilibili.com/live_user/v1/UserInfo/get_anchor_in_room?roomid=${room}`;
+		(faceServer === 'direct' ? Axios.get(getAnchorApi).then(({ data }) => data) : json2jsonp2json(getAnchorApi)).then(
 			({
 				data: {
 					info: { face, uid },
@@ -55,6 +56,7 @@ if (isNaN(aUID)) {
 				FaceCache.setFace(uid, face);
 			}
 		);
+	}
 }
 
 //礼物合并
@@ -157,7 +159,7 @@ function onGift({ gift, num, sender: { uid, name, isOwner, face } }) {
 
 //清除不需要显示的弹幕
 setInterval(() => {
-	$('.danmaku-item').each(function() {
+	$('.danmaku-item').each(function () {
 		let $this = $(this);
 		if ($this.offset().top < -100) $this.remove();
 		else if (!$this.hasClass('op-0') && $this.offset().top < 0) $this.addClass('op-0');
