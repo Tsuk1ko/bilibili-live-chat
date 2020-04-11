@@ -2,13 +2,23 @@
 # yarn lockfile v1
 
 
-"@babel/polyfill@^7.0.0-beta.51":
+"@babel/polyfill@^7.0.0-beta.51", "@babel/polyfill@^7.8.7":
   version "7.8.7"
   resolved "https://registry.yarnpkg.com/@babel/polyfill/-/polyfill-7.8.7.tgz#151ec24c7135481336168c3bd8b8bf0cf91c032f"
   integrity sha512-LeSfP9bNZH2UOZgcGcZ0PIHUt1ZuHub1L3CVmEyqLxCeDLm4C5Gi8jRH8ZX2PNpDhQCo0z6y/+DIs2JlliXW8w==
   dependencies:
     core-js "^2.6.5"
     regenerator-runtime "^0.13.4"
+
+"@tsuk1ko/bilibili-danmaku-client@^2.1.2":
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/@tsuk1ko/bilibili-danmaku-client/-/bilibili-danmaku-client-2.1.2.tgz#cba5ad21bd72dc8c94da957b6728336679080676"
+  integrity sha512-3NwinBo3RCiCFWH4fSt3BIqXz4YgwaSES7zcGFDTuNUNDwVkiDt/jNn1oz3TJVSPE+AL17pBCbRagmBcGVW5Hw==
+  dependencies:
+    "@babel/polyfill" "^7.8.7"
+    debug "^3.2.6"
+    lodash "^4.17.15"
+    x-platform-ws "^0.2.1"
 
 accepts@^1.3.5:
   version "1.3.7"
@@ -34,16 +44,6 @@ axios@^0.19.2:
   integrity sha512-fjgm5MvRHLhx+osE2xoekY70AhARk3a6hkN+3Io1jc00jtquGvxYlKlsFUhmUET0V5te6CcZI7lcv2Ym61mjHA==
   dependencies:
     follow-redirects "1.5.10"
-
-bilibili-danmaku-client@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/bilibili-danmaku-client/-/bilibili-danmaku-client-2.0.0.tgz#bb151dcb7027c50cf93cee0607517539c5105ff6"
-  integrity sha512-5DFRMk2KrBYrHwOWNfqSo9FYhbusso8Uobt4w+GCpHlMWfpb3XTM4u9cvK85CEAfye+54Fijw9XKueOI1DcjPA==
-  dependencies:
-    "@babel/polyfill" "^7.0.0-beta.51"
-    debug "^3.1.0"
-    lodash "^4.17.10"
-    x-platform-ws "^0.2.0"
 
 cache-content-type@^1.0.0:
   version "1.0.1"
@@ -97,7 +97,7 @@ debug@^2.6.3:
   dependencies:
     ms "2.0.0"
 
-debug@^3.1.0:
+debug@^3.1.0, debug@^3.2.6:
   version "3.2.6"
   resolved "https://registry.yarnpkg.com/debug/-/debug-3.2.6.tgz#e83d17de16d8a7efb7717edbe5fb10135eee629b"
   integrity sha512-mel+jf7nrtEl5Pn1Qx46zARXKDpBbvzezse7p7LqINmdoIk8PYP5SySaxEmYv6TZ0JyEKA1hsCId6DIhgITtWQ==
@@ -211,9 +211,9 @@ is-generator-function@^1.0.7:
   integrity sha512-YZc5EwyO4f2kWCax7oegfuSr9mFz1ZvieNYBEjmukLxgXfBUbxAWGVF7GZf0zidYtoBl3WvC07YK0wT76a+Rtw==
 
 jquery@^3.4.1:
-  version "3.4.1"
-  resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.4.1.tgz#714f1f8d9dde4bdfa55764ba37ef214630d80ef2"
-  integrity sha512-36+AdBzCL+y6qjw5Tx7HgzeGCzC81MDDgaUP8ld2zhx58HdqXGoBd+tHdrBMiyjGQs0Hxs/MLZTu/eHNJJuWPw==
+  version "3.5.0"
+  resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.5.0.tgz#9980b97d9e4194611c36530e7dc46a58d7340fc9"
+  integrity sha512-Xb7SVYMvygPxbFMpTFQiHh1J7HClEaThguL15N/Gg37Lri/qKyhRGZYzHRyLH8Stq3Aow0LsHO2O2ci86fCrNQ==
 
 keygrip@~1.1.0:
   version "1.1.0"
@@ -290,7 +290,7 @@ koa@^2.5.1:
     type-is "^1.6.16"
     vary "^1.1.2"
 
-lodash@^4.17.10:
+lodash@^4.17.15:
   version "4.17.15"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.15.tgz#b447f6670a0455bbfeedd11392eff330ea097548"
   integrity sha512-8xOcRHvCjnocdS5cpwXQXVzmmh5e5+saE2QGoeQmbKmRS6J3VQppPOIt0MnmE+4xlZoumy0GPG0D0MVIQbNA1A==
@@ -363,10 +363,10 @@ path-is-absolute@1.0.1:
   resolved "https://registry.yarnpkg.com/path-is-absolute/-/path-is-absolute-1.0.1.tgz#174b9268735534ffbc7ace6bf53a5a9e1b5c5f5f"
   integrity sha1-F0uSaHNVNP+8es5r9TpanhtcX18=
 
-qs@^6.9.1:
-  version "6.9.1"
-  resolved "https://registry.yarnpkg.com/qs/-/qs-6.9.1.tgz#20082c65cb78223635ab1a9eaca8875a29bf8ec9"
-  integrity sha512-Cxm7/SS/y/Z3MHWSxXb8lIFqgqBowP5JMlTUFyJN88y0SGQhVmZnqFK/PeuMX9LzUyWsqqhNxIyg0jlzq946yA==
+qs@^6.9.3:
+  version "6.9.3"
+  resolved "https://registry.yarnpkg.com/qs/-/qs-6.9.3.tgz#bfadcd296c2d549f1dffa560619132c977f5008e"
+  integrity sha512-EbZYNarm6138UKKq46tdx08Yo/q9ZhFoAXAI1meAFd2GtbRDhbZY2WQSICskT0c5q99aFzLG1D4nvTk9tqfXIw==
 
 regenerator-runtime@^0.13.4:
   version "0.13.5"
@@ -450,7 +450,7 @@ ws@^5.2.0:
   dependencies:
     async-limiter "~1.0.0"
 
-x-platform-ws@^0.2.0:
+x-platform-ws@^0.2.1:
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/x-platform-ws/-/x-platform-ws-0.2.1.tgz#8acb3d2775cb8c98456329aab457e94ef787a13e"
   integrity sha512-kFAMxzZoyta1Nt9LDTHK7ZWG14YvHucD/ILjuzJ0dwmTO6sSJ71OEP9oWuCSm+vKI54I3W6Pqx23PuGlz0fj8g==
