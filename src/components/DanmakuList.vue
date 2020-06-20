@@ -1,7 +1,15 @@
 <template>
   <div v-if="isGiftList" class="danmaku-list-pinned" ref="danmakuListRef">
     <div class="danmaku-list hidden">
-      <danmaku-item v-for="i in giftPin" :key="i" type="gift" uname="某人" giftName="礼物" :num="i" />
+      <danmaku-item
+        v-for="i in giftPin"
+        :key="i"
+        :show-face="giftShowFace"
+        type="gift"
+        uname="某人"
+        giftName="礼物"
+        :num="i"
+      />
     </div>
     <div class="danmaku-list absolute" ref="giftListRef">
       <danmaku-item
@@ -42,6 +50,7 @@ export default {
   props: {
     ...propsType,
     isGiftList: Boolean,
+    giftShowFace: Boolean,
   },
   setup(props) {
     // 运行状态

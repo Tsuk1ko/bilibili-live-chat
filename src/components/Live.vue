@@ -1,12 +1,18 @@
 <template>
   <div id="live">
-    <danmaku-list ref="giftPinList" v-bind="props" :is-gift-list="true" v-if="props.giftPin" />
+    <danmaku-list
+      ref="giftPinList"
+      v-bind="props"
+      :gift-show-face="giftShowFace"
+      :is-gift-list="true"
+      v-if="props.giftPin"
+    />
     <danmaku-list ref="danmakuList" v-bind="props" />
   </div>
 </template>
 
 <script>
-import { onBeforeUnmount, ref, onMounted } from 'vue';
+import { onBeforeUnmount, ref, onMounted, computed } from 'vue';
 import { propsType } from '@/utils/props';
 import { setFace } from '@/utils/face';
 import { KeepLiveWS } from 'bilibili-live-ws';
@@ -30,6 +36,8 @@ export default {
     const danmakuList = ref(null);
 
     const giftCombMap = new Map();
+
+    const giftShowFace = computed(() => !['false', 'gift'].includes(props.face));
 
     onMounted(() => {
       // 礼物
@@ -75,7 +83,7 @@ export default {
       live.on('DANMU_MSG', ({ info: [, message, [uid, uname, isOwner /*, isVip, isSvip*/]] }) => {
         const danmaku = {
           type: 'message',
-          showFace: !['false', 'gift'].includes(props.face),
+          showFace: giftShowFace.value,
           uid,
           uname,
           message,
@@ -87,7 +95,7 @@ export default {
       });
     });
 
-    return { props, giftPinList, danmakuList };
+    return { props, giftShowFace, giftPinList, danmakuList };
   },
 };
 </script>
