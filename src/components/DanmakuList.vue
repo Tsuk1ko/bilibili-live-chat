@@ -64,12 +64,12 @@ export default {
 
     // 移除不可见弹幕
     onMounted(() => {
-      const topOfList = danmakuListRef.value.getBoundingClientRect().top;
+      const topOfList = danmakuListRef.value.getBoundingClientRect().top - 5;
       const removeInvisibleDanmaku = () => {
         const i = danmakuList.value.findIndex(item => {
           const { top = topOfList, height = 0 } = item.el?.$el?.getBoundingClientRect() ?? {};
           if (top < topOfList) item.hidden = true;
-          return top + height > topOfList;
+          return top + height > topOfList && !item.el?.needRemoved;
         });
         if (i > 0) danmakuList.value.splice(0, i);
       };
@@ -117,7 +117,7 @@ export default {
         }
         danmaku.face = face;
       }
-      danmaku.stay = props.display === 'bottom' ? props.stay : 0;
+      danmaku.stay = danmaku.stay || (props.display === 'bottom' ? props.stay : 0);
       danmakuQueue.push({
         props: danmaku,
         key: uuid(),

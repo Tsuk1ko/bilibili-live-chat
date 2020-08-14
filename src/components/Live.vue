@@ -23,23 +23,34 @@ export default {
   components: { DanmakuList },
   props: propsType,
   setup(props) {
-    console.log('正在连接直播弹幕服务器');
-    const live = new KeepLiveWS(props.room);
-    onBeforeUnmount(() => live.close());
-    live.on('open', () => console.log('已连接直播弹幕服务器'));
-    live.on('live', () => console.log('已进入直播间', props.room));
-    live.on('close', () => console.log('已断开与直播弹幕服务器的连接'));
-    live.on('heartbeat', online => console.log('当前人气值', online));
-    window.closeLive = () => live.close();
-
     const giftPinList = ref(null);
     const danmakuList = ref(null);
 
     const giftCombMap = new Map();
-
     const giftShowFace = computed(() => !['false', 'gift'].includes(props.face));
 
+    const addInfoDanmaku = message => {
+      danmakuList.value.addDanmaku({
+        type: 'info',
+        message,
+        stay: props.stay || 5000,
+      });
+    };
+
     onMounted(() => {
+      console.log('正在连接直播弹幕服务器');
+      const live = new KeepLiveWS(props.room);
+      onBeforeUnmount(() => live.close());
+      live.on('open', () => {
+        console.log('已连接直播弹幕服务器');
+        addInfoDanmaku('已连接直播弹幕服务器');
+      });
+      live.on('live', () => {
+        console.log('已连接直播间', props.room);
+        addInfoDanmaku(`已连接直播间 ${props.room}`);
+      });
+      live.on('close', () => console.log('已断开与直播弹幕服务器的连接'));
+      live.on('heartbeat', online => console.log('当前人气值', online));
       // 礼物
       const giftList = props.giftPin ? giftPinList : danmakuList;
       live.on('SEND_GIFT', ({ data: { uid, uname, action, giftName, num, face } }) => {
@@ -93,6 +104,9 @@ export default {
         if (props.limit) danmakuList.value.addSpeedLimitDanmaku(danmaku);
         else danmakuList.value.addDanmaku(danmaku);
       });
+      // SC
+      live.on('SUPER_CHAT_MESSAGE', data => console.log('SUPER_CHAT_MESSAGE', data));
+      live.on('SUPER_CHAT_MESSAGE_JPN', data => console.log('SUPER_CHAT_MESSAGE_JPN', data));
     });
 
     return { props, giftShowFace, giftPinList, danmakuList };

@@ -13,7 +13,7 @@
       <span class="danmaku-message">&nbsp;×&nbsp;</span>
       <span class="danmaku-gift-num">{{ num }}</span>
     </div>
-    <div v-else-if="type === 'warning'" class="danmaku-content">
+    <div v-else-if="type === 'info'" class="danmaku-content">
       <span class="danmaku-message">{{ message }}</span>
     </div>
   </div>
@@ -43,12 +43,18 @@ export default {
   },
   setup(props) {
     const hidden = ref(false);
+    const needRemoved = ref(false);
     if (props.stay) {
-      const stayTimeout = setTimeout(() => (hidden.value = true), props.stay);
+      const stayTimeout = setTimeout(() => {
+        hidden.value = true;
+        if (props.type === 'info') {
+          setTimeout(() => (needRemoved.value = true), 800);
+        }
+      }, props.stay);
       onBeforeUnmount(() => clearTimeout(stayTimeout));
     }
     const isHidden = computed(() => props.hidden || hidden.value);
-    return { ...toRefs(props), isHidden };
+    return { ...toRefs(props), isHidden, needRemoved };
   },
 };
 </script>
@@ -70,7 +76,7 @@ export default {
     display: flex;
     flex-direction: row;
     align-items: flex-start;
-    transition: opacity 0.2s;
+    transition: opacity 0.5s;
     user-select: none;
     text-shadow: -2px -2px #000000, -2px -1px #000000, -2px 0 #000000, -2px 1px #000000, -2px 2px #000000,
       -1px -2px #000000, -1px -1px #000000, -1px 0 #000000, -1px 1px #000000, -1px 2px #000000, 0 -2px #000000,

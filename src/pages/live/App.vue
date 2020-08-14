@@ -1,5 +1,5 @@
 <template>
-  <danmaku-item v-if="errMsg" type="warning" :message="errMsg" />
+  <danmaku-item v-if="errMsg" type="info" :message="errMsg" />
   <live v-else-if="ready" v-bind="props" />
 </template>
 
