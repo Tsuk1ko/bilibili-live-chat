@@ -10,8 +10,7 @@
 
 ## 食用步骤
 
-1. 在线用：打开 [blc.lolicon.app](https://blc.lolicon.app/)  
-   本地用：[点击下载](https://github.com/Tsuk1ko/bilibili-live-chat/archive/gh-pages.zip)，解压，浏览器中打开 `index.html`
+1. 打开 [blc.lolicon.app](https://blc.lolicon.app/)
 2. 输入房间号，填写设置项，点击“Go!”，然后复制新页面的地址
 3. 在 OBS 中添加“浏览器”来源，将地址粘贴到“URL”处，根据自己需要调整宽高和缩放
 4. Enjoy~
