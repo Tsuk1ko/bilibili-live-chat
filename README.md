@@ -1,6 +1,6 @@
 # Bilibili Live Chat
 
-![Preview](https://i.loli.net/2020/06/20/vXuZKCq396co2HO.gif) 
+![Preview](https://i.loli.net/2020/06/20/vXuZKCq396co2HO.gif)
 
 这是一个无后端的，仿 YouTube Live Chat 的，箱都不用开就能食用的 Bilibili 直播弹幕姬
 
