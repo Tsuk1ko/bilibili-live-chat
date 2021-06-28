@@ -36,6 +36,10 @@ export default {
         stay: props.stay || 5000,
       });
     };
+    const addDanmaku = danmaku => {
+      if (props.limit) danmakuList.value.addSpeedLimitDanmaku(danmaku);
+      else danmakuList.value.addDanmaku(danmaku);
+    };
 
     onMounted(() => {
       console.log('正在连接直播弹幕服务器');
@@ -101,8 +105,8 @@ export default {
           isAnchor: uid === props.anchor,
           isOwner: !!isOwner,
         };
-        if (props.limit) danmakuList.value.addSpeedLimitDanmaku(danmaku);
-        else danmakuList.value.addDanmaku(danmaku);
+        if (props.delay > 0) setTimeout(() => addDanmaku(danmaku), props.delay * 1000);
+        else addDanmaku(danmaku);
       });
       // SC
       live.on('SUPER_CHAT_MESSAGE', data => console.log('SUPER_CHAT_MESSAGE', data));

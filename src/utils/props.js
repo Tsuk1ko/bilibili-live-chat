@@ -12,10 +12,11 @@ export const defaultProps = {
   limit: '',
   giftComb: '',
   giftPin: '',
+  delay: '',
 };
 Object.freeze(defaultProps);
 
-export const intProps = ['room', 'anchor', 'faceExpireDay', 'stay', 'giftComb', 'limit', 'giftPin'];
+export const intProps = ['room', 'anchor', 'faceExpireDay', 'stay', 'giftComb', 'limit', 'giftPin', 'delay'];
 Object.freeze(intProps);
 
 export const intPropsSet = new Set(intProps);

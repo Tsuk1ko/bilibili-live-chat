@@ -1,16 +1,14 @@
 <template>
   <div id="panel" class="panel panel-default">
     <div class="panel-heading">
-      <h2 class="panel-title" style="font-size: 30px; display: inline-block; margin-right: 10px;">
-        Bilibili Live Chat
-      </h2>
+      <h2 class="panel-title" style="font-size: 30px; display: inline-block; margin-right: 10px">Bilibili Live Chat</h2>
       <iframe
-        src="https://ghbtns.com/github-btn.html?user=Tsuk1ko&repo=bilibili-live-chat&type=star&count=true&size=large"
+        src="https://ghbtns.com/github-btn.html?user=Tsuk1ko&amp;repo=bilibili-live-chat&amp;type=star&amp;count=true&amp;size=large"
         frameborder="0"
         scrolling="0"
         width="160px"
         height="30px"
-        style="vertical-align: bottom;"
+        style="vertical-align: bottom"
       ></iframe>
     </div>
     <div class="panel-body">
@@ -103,8 +101,19 @@
           type="number"
           min="0"
           step="1"
-          placeholder="选填，可将礼物置顶，与弹幕分开展示，此项相当于设置指定区域的高度"
+          placeholder="选填，可将礼物置顶，与弹幕分开展示，此项相当于设置礼物区域的高度"
           v-model.number="form.giftPin"
+        />
+      </input-group>
+      <!-- 弹幕延迟 -->
+      <input-group header="弹幕延迟" footer="秒">
+        <input
+          class="form-control"
+          type="number"
+          min="0"
+          step="1"
+          placeholder="选填，收到弹幕后延迟这么久才会显示"
+          v-model.number="form.delay"
         />
       </input-group>
     </div>
