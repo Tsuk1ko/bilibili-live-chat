@@ -11,24 +11,24 @@
     "@babel/plugin-proposal-nullish-coalescing-operator": "^7.14.5",
     "@babel/plugin-proposal-optional-chaining": "^7.14.5",
     "bilibili-live-ws": "^5.1.1",
-    "core-js": "^3.15.1",
+    "core-js": "^3.15.2",
     "lodash": "^4.17.21",
     "query-string": "^7.0.1",
     "uuid": "^8.3.2",
-    "vue": "^3.1.2"
+    "vue": "^3.1.4"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^4.5.13",
     "@vue/cli-plugin-eslint": "^4.5.13",
     "@vue/cli-service": "^4.5.13",
-    "@vue/compiler-sfc": "^3.1.2",
+    "@vue/compiler-sfc": "^3.1.4",
     "babel-eslint": "^10.1.0",
     "babel-plugin-lodash": "^3.3.4",
-    "eslint": "^7.29.0",
-    "eslint-plugin-vue": "7.12.1",
-    "lint-staged": "^11.0.0",
+    "eslint": "^7.30.0",
+    "eslint-plugin-vue": "^7.13.0",
+    "lint-staged": "^11.0.1",
     "prettier": "^2.3.2",
-    "sass": "^1.34.0",
+    "sass": "^1.35.2",
     "sass-loader": "^10.2.0"
   },
   "eslintConfig": {
