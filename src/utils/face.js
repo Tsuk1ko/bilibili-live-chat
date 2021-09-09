@@ -31,7 +31,7 @@ const getFaceLoads = ([i, file]) => {
     ];
   }
 };
-const isFaceExpired = ([, , t]) => !t || getDay() - t <= options.expireDay;
+const isFaceExpired = ([, , t]) => !t || getDay() - t >= options.expireDay;
 
 const faceMap = new Map(Object.entries(sget('face', {})).filter(([, face]) => !isFaceExpired(face)));
 
