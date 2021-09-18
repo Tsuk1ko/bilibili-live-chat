@@ -33,7 +33,9 @@ const getFaceLoads = ([i, file]) => {
 };
 const isFaceExpired = ([, , t]) => !t || getDay() - t >= options.expireDay;
 
-const faceMap = new Map(Object.entries(sget('face', {})).filter(([, face]) => !isFaceExpired(face)));
+const faceMap = new Map(Object.entries(sget('face', {}))
+                              .filter(([, face]) => !isFaceExpired(face))
+                              .map(([uid, face]) => [Number(uid), face]));
 
 const saveFaceMap = debounce(() => sset('face', fromPairs(Array.from(faceMap))), 5000, { maxWait: 5000 });
 
