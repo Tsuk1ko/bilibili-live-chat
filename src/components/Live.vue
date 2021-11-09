@@ -109,8 +109,45 @@ export default {
         else addDanmaku(danmaku);
       });
       // SC
-      live.on('SUPER_CHAT_MESSAGE', data => console.log('SUPER_CHAT_MESSAGE', data));
+      live.on('SUPER_CHAT_MESSAGE', fullData => {
+        console.log('SUPER_CHAT_MESSAGE', fullData);
+        const {
+          data: {
+            uid,
+            user_info: { uname },
+            message: giftName,
+            message_trans,
+            price,
+            rate,
+          },
+        } = fullData;
+        giftList.value.addDanmaku({
+          type: 'gift',
+          showFace: props.face !== 'false',
+          uid,
+          uname,
+          giftName,
+          num: 1,
+        });
+      });
+
       live.on('SUPER_CHAT_MESSAGE_JPN', data => console.log('SUPER_CHAT_MESSAGE_JPN', data));
+
+      // 舰长
+      live.on('USER_TOAST_MSG', fullData => {
+        console.log('USER_TOAST_MSG', fullData);
+        const {
+          data: { uid, username: uname, role_name: giftName, num, toast_msg, price, unit },
+        } = fullData;
+        giftList.value.addDanmaku({
+          type: 'gift',
+          showFace: props.face !== 'false',
+          uid,
+          uname,
+          giftName,
+          num,
+        });
+      });
     });
 
     return { props, giftShowFace, giftPinList, danmakuList };
