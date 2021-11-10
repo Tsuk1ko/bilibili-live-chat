@@ -13,6 +13,11 @@
       <span class="danmaku-message">&nbsp;×&nbsp;</span>
       <span class="danmaku-gift-num">{{ num }}</span>
     </div>
+    <div v-else-if="type === 'sc'" class="danmaku-content">
+      <span class="danmaku-message">感谢&nbsp;</span>
+      <span class="danmaku-author-name">{{ uname }}</span>
+      <span class="danmaku-message">&nbsp;的SC：{{ message }}</span>
+    </div>
     <div v-else-if="type === 'info'" class="danmaku-content">
       <span class="danmaku-message">{{ message }}</span>
     </div>

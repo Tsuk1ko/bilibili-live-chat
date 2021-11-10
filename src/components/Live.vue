@@ -55,6 +55,7 @@ export default {
       });
       live.on('close', () => console.log('已断开与直播弹幕服务器的连接'));
       live.on('heartbeat', online => console.log('当前人气值', online));
+
       // 礼物
       const giftList = props.giftPin ? giftPinList : danmakuList;
       live.on('SEND_GIFT', ({ data: { uid, uname, action, giftName, num, face } }) => {
@@ -94,6 +95,7 @@ export default {
           });
         }
       });
+
       // 弹幕
       live.on('DANMU_MSG', ({ info: [, message, [uid, uname, isOwner /*, isVip, isSvip*/]] }) => {
         const danmaku = {
@@ -108,6 +110,7 @@ export default {
         if (props.delay > 0) setTimeout(() => addDanmaku(danmaku), props.delay * 1000);
         else addDanmaku(danmaku);
       });
+
       // SC
       live.on('SUPER_CHAT_MESSAGE', fullData => {
         console.log('SUPER_CHAT_MESSAGE', fullData);
@@ -115,29 +118,25 @@ export default {
           data: {
             uid,
             user_info: { uname },
-            message: giftName,
-            message_trans,
-            price,
-            rate,
+            message,
           },
         } = fullData;
         giftList.value.addDanmaku({
-          type: 'gift',
+          type: 'sc',
           showFace: props.face !== 'false',
           uid,
           uname,
-          giftName,
-          num: 1,
+          message,
         });
       });
+      window.giftList = giftList;
 
       live.on('SUPER_CHAT_MESSAGE_JPN', data => console.log('SUPER_CHAT_MESSAGE_JPN', data));
 
       // 舰长
       live.on('USER_TOAST_MSG', fullData => {
-        console.log('USER_TOAST_MSG', fullData);
         const {
-          data: { uid, username: uname, role_name: giftName, num, toast_msg, price, unit },
+          data: { uid, username: uname, role_name: giftName, num },
         } = fullData;
         giftList.value.addDanmaku({
           type: 'gift',
