@@ -1,6 +1,6 @@
 {
   "name": "bilibili-live-chat",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -8,27 +8,27 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
-    "@babel/plugin-proposal-nullish-coalescing-operator": "^7.14.5",
-    "@babel/plugin-proposal-optional-chaining": "^7.14.5",
-    "bilibili-live-ws": "^5.1.1",
-    "core-js": "^3.15.2",
+    "@babel/plugin-proposal-nullish-coalescing-operator": "^7.16.0",
+    "@babel/plugin-proposal-optional-chaining": "^7.16.0",
+    "bilibili-live-ws": "^6.0.1",
+    "core-js": "^3.19.1",
     "lodash": "^4.17.21",
     "query-string": "^7.0.1",
     "uuid": "^8.3.2",
-    "vue": "^3.1.4"
+    "vue": "^3.2.21"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "^4.5.13",
-    "@vue/cli-plugin-eslint": "^4.5.13",
-    "@vue/cli-service": "^4.5.13",
-    "@vue/compiler-sfc": "^3.1.4",
+    "@vue/cli-plugin-babel": "^4.5.15",
+    "@vue/cli-plugin-eslint": "^4.5.15",
+    "@vue/cli-service": "^4.5.15",
+    "@vue/compiler-sfc": "^3.2.21",
     "babel-eslint": "^10.1.0",
     "babel-plugin-lodash": "^3.3.4",
-    "eslint": "^7.30.0",
-    "eslint-plugin-vue": "^7.13.0",
-    "lint-staged": "^11.0.1",
-    "prettier": "^2.3.2",
-    "sass": "^1.35.2",
+    "eslint": "^7.32.0",
+    "eslint-plugin-vue": "^7.20.0",
+    "lint-staged": "^11.2.6",
+    "prettier": "^2.4.1",
+    "sass": "^1.43.4",
     "sass-loader": "^10.2.0"
   },
   "eslintConfig": {
