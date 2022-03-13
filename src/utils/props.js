@@ -58,7 +58,7 @@ export const selectOptions = {
     },
     {
       value: 'imjad',
-      text: '显示，通过 Imjad API 获取',
+      text: '显示，通过 HibiAPI 获取',
     },
   ],
   display: [
