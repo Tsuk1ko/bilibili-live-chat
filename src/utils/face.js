@@ -13,7 +13,7 @@ export const setFaceOption = o => Object.assign(options, o);
 const faceApi = uid => {
   switch (options.method) {
     case 'imjad':
-      return get(`https://api.imjad.cn/bilibili/v2/?get=space&vmid=${uid}&pagesize=1`).then(r => r.data?.card?.face);
+      return get(`https://api.obfs.dev/api/bilibili/v3/user_info?uid=${uid}&size=1`).then(r => r.data?.card?.face);
     default:
       return autoGet(`https://api.bilibili.com/x/space/acc/info?mid=${uid}`).then(r => r.data?.face);
   }

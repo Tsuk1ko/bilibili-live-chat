@@ -1,6 +1,6 @@
 <template>
   <div class="danmaku-item" :class="{ hidden: isHidden }">
-    <div v-if="showFace" class="danmaku-author-face" :style="{ backgroundImage: face ? `url(${face})` : '' }"></div>
+    <img v-if="showFace" class="danmaku-author-face" :src="face" />
     <div v-if="type === 'message'" class="danmaku-content">
       <span class="danmaku-author-name with-colon" :class="{ anchor: isAnchor, owner: isOwner }">{{ uname }}</span>
       <span class="danmaku-message">{{ message }}</span>
@@ -100,7 +100,7 @@ export default {
     border-radius: 24px;
     margin-right: 6px;
     display: inline-block;
-    background-size: cover;
+    pointer-events: none;
   }
   &-content {
     overflow: initial;
