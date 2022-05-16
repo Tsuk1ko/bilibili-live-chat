@@ -59,6 +59,10 @@ export default {
       // 礼物
       const giftList = props.giftPin ? giftPinList : danmakuList;
       live.on('SEND_GIFT', ({ data: { uid, uname, action, giftName, num, face } }) => {
+        if (props.blockUID.split("|").lastIndexOf(Number(uid).toString()) != -1) {
+          console.log("屏蔽了来自[" + uname + "]的礼物: " + giftName + " " + num + "个");
+          return;
+        }
         setFace(uid, face);
         if (props.giftComb) {
           const key = `${uid}-${giftName}`;
@@ -98,6 +102,10 @@ export default {
 
       // 弹幕
       live.on('DANMU_MSG', ({ info: [, message, [uid, uname, isOwner /*, isVip, isSvip*/]] }) => {
+        if (props.blockUID.split("|").lastIndexOf(Number(uid).toString()) != -1) {
+          console.log("屏蔽了来自[" + uname + "]的弹幕: " + message);
+          return;
+        }
         const danmaku = {
           type: 'message',
           showFace: giftShowFace.value,

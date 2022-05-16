@@ -116,6 +116,15 @@
           v-model.number="form.delay"
         />
       </input-group>
+      <!-- 屏蔽用户 -->
+      <input-group header="屏蔽用户" footer="">
+        <input
+          class="form-control"
+          type="text"
+          placeholder="选填，将不显示指定UID用户的弹幕和礼物，用竖杠|分隔"
+          v-model="form.blockUID"
+        />
+      </input-group>
     </div>
   </div>
 </template>

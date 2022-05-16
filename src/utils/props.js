@@ -13,6 +13,7 @@ export const defaultProps = {
   giftComb: '',
   giftPin: '',
   delay: '',
+  blockUID: '',
 };
 Object.freeze(defaultProps);
 
