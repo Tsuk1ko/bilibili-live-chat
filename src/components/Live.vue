@@ -13,9 +13,9 @@
 
 <script>
 import { onBeforeUnmount, ref, onMounted, computed } from 'vue';
+import { KeepLiveWS } from 'bilibili-live-ws';
 import { propsType } from '@/utils/props';
 import { setFace } from '@/utils/face';
-import { KeepLiveWS } from 'bilibili-live-ws';
 
 import DanmakuList from '@/components/DanmakuList';
 

@@ -37,7 +37,7 @@ export const selectOptions = {
   cors: [
     {
       value: 'false',
-      text: '关闭（所有跨域请求将依赖 json2jsonp）',
+      text: '关闭（所有跨域请求将依赖 codetabs，限制 5 请求/秒）',
     },
     {
       value: 'true',
@@ -55,7 +55,7 @@ export const selectOptions = {
     },
     {
       value: 'true',
-      text: '显示，通过 Bilibili API 获取（建议启用直接跨域再使用）',
+      text: '显示，通过 Bilibili API 获取（跨域）',
     },
     {
       value: 'imjad',

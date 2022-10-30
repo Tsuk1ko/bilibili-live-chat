@@ -4,7 +4,7 @@
 </template>
 
 <script>
-import { reactive, onBeforeUnmount, ref } from 'vue';
+import { defineComponent, reactive, onBeforeUnmount, ref } from 'vue';
 import { parseProps } from '@/utils/props';
 import { setCors, autoGet } from '@/utils/request';
 import { setFaceOption } from '@/utils/face';
@@ -12,7 +12,7 @@ import { setFaceOption } from '@/utils/face';
 import Live from '@/components/Live';
 import DanmakuItem from '@/components/DanmakuItem';
 
-export default {
+export default defineComponent({
   components: { Live, DanmakuItem },
   setup() {
     const onHashChange = () => window.location.reload();
@@ -30,25 +30,29 @@ export default {
     const ready = ref(false);
     const errMsg = ref('');
 
-    // 获取房间信息
-    autoGet(`https://api.live.bilibili.com/room_ex/v1/RoomNews/get?roomid=${props.room}`)
-      .then(({ code, msg, data: { roomid, uid } }) => {
-        if (code === 0) {
-          props.room = parseInt(roomid);
-          props.anchor = parseInt(uid);
-          ready.value = true;
-        } else {
-          errMsg.value = msg;
-        }
-      })
-      .catch(() => {
-        errMsg.value = '获取房间信息失败';
-        if (canCORS) errMsg.value += '，请检查是否正确禁用了浏览器的 web security 以允许直接跨域';
-      });
+    if (props.anchor) {
+      ready.value = true;
+    } else {
+      // 获取房间信息
+      autoGet(`https://api.live.bilibili.com/room/v1/Room/room_init?id=${props.room}`)
+        .then(({ code, msg, data: { room_id, uid } }) => {
+          if (code === 0) {
+            props.room = parseInt(room_id);
+            props.anchor = parseInt(uid);
+            ready.value = true;
+          } else {
+            errMsg.value = msg;
+          }
+        })
+        .catch(() => {
+          errMsg.value = '获取房间信息失败';
+          if (canCORS) errMsg.value += '，请检查是否正确禁用了浏览器的 web security 以允许直接跨域';
+        });
+    }
 
     return { props, ready, errMsg };
   },
-};
+});
 </script>
 
 <style>

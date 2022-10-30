@@ -15,7 +15,7 @@ const faceApi = uid => {
     case 'imjad':
       return get(`https://api.obfs.dev/api/bilibili/v3/user_info?uid=${uid}&size=1`).then(r => r.data?.card?.face);
     default:
-      return autoGet(`https://api.bilibili.com/x/space/acc/info?mid=${uid}`).then(r => r.data?.face);
+      return autoGet(`https://api.bilibili.com/x/web-interface/card?mid=${uid}`).then(r => r.data?.card?.face);
   }
 };
 

@@ -26,6 +26,17 @@
           <button class="btn btn-primary" type="button" :disabled="!form.room" @click="goLive">Go!</button>
         </span>
       </input-group>
+      <!-- 主播UID -->
+      <input-group header="主播UID">
+        <input
+          class="form-control"
+          type="number"
+          min="0"
+          step="1"
+          placeholder="如果获取房间信息失败才需要手动填写此项，并且此时直播间号请填写长号而非短号"
+          v-model.number="form.anchor"
+        />
+      </input-group>
       <!-- 直接跨域 -->
       <input-group header="直接跨域">
         <select class="form-control" v-model="form.cors">
@@ -130,14 +141,14 @@
 </template>
 
 <script>
-import { unref, reactive, watchEffect, computed, readonly } from 'vue';
-import InputGroup from '@/components/InputGroup';
+import { defineComponent, unref, reactive, watchEffect, computed, readonly } from 'vue';
+import InputGroup from '@/components/InputGroup.vue';
 import { sget, sset } from '@/utils/storage';
 import { defaultProps, intProps, selectOptions } from '@/utils/props';
-import { stringify as qss } from 'querystring';
+import { stringify as qss } from 'query-string';
 import { fromPairs, pick } from 'lodash';
 
-export default {
+export default defineComponent({
   components: { InputGroup },
   setup() {
     const form = reactive({
@@ -173,7 +184,7 @@ export default {
       options: readonly(selectOptions),
     };
   },
-};
+});
 </script>
 
 <style>
@@ -217,6 +228,9 @@ label {
 }
 .input-group:not(:last-child) {
   margin-bottom: 10px;
+}
+.input-group-addon.front {
+  min-width: 81px;
 }
 a {
   text-decoration: none !important;
