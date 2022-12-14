@@ -50,6 +50,12 @@ export default defineComponent({
         });
     }
 
+    if (props.debug) {
+      import(/* webpackIgnore: true */ 'https://fastly.jsdelivr.net/npm/vconsole/dist/vconsole.min.js').then(() => {
+        new window.VConsole();
+      });
+    }
+
     return { props, ready, errMsg };
   },
 });

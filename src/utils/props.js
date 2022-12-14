@@ -14,6 +14,7 @@ export const defaultProps = {
   giftPin: '',
   delay: '',
   blockUID: '',
+  debug: '',
 };
 Object.freeze(defaultProps);
 

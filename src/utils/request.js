@@ -2,7 +2,12 @@ let canCORS = true;
 
 export const setCors = bool => (canCORS = bool);
 
-export const get = url => fetch(url).then(r => r.json());
+export const get = url =>
+  fetch(url, {
+    referrer: '',
+    referrerPolicy: 'no-referrer',
+    mode: 'no-cors',
+  }).then(r => r.json());
 
 export const corsGet = url => fetch(`https://api.codetabs.com/v1/proxy/?quest=${url}`).then(r => r.json());
 
