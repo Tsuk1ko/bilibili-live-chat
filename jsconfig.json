@@ -1,7 +1,9 @@
 {
   "include": ["./src/**/*"],
   "compilerOptions": {
+    "target": "ESNext",
     "baseUrl": ".",
+    "moduleResolution": "node",
     "resolveJsonModule": true,
     "paths": {
       "@/*": ["src/*"]
