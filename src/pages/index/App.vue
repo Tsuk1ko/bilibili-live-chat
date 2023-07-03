@@ -13,7 +13,7 @@
     </div>
     <div class="panel-body">
       <!-- 直播间号 -->
-      <input-group header="直播间号">
+      <InputGroup header="直播间号">
         <input
           class="form-control"
           type="number"
@@ -25,9 +25,9 @@
         <span class="input-group-btn">
           <button class="btn btn-primary" type="button" :disabled="!form.room" @click="goLive">Go!</button>
         </span>
-      </input-group>
+      </InputGroup>
       <!-- 主播UID -->
-      <input-group header="主播UID">
+      <InputGroup header="主播UID">
         <input
           class="form-control"
           type="number"
@@ -36,27 +36,27 @@
           placeholder="如果获取房间信息失败才需要手动填写此项，并且此时直播间号请填写长号而非短号"
           v-model.number="form.anchor"
         />
-      </input-group>
+      </InputGroup>
       <!-- 直接跨域 -->
-      <input-group header="直接跨域">
+      <InputGroup header="直接跨域">
         <select class="form-control" v-model="form.cors">
           <option v-for="{ value, text } in options.cors" :key="value" :value="value">{{ text }}</option>
         </select>
         <template #footer>
           <a href="https://github.com/Tsuk1ko/bilibili-live-chat#直接跨域" target="_blank">查看说明</a>
         </template>
-      </input-group>
+      </InputGroup>
       <!-- 显示头像 -->
-      <input-group header="显示头像">
+      <InputGroup header="显示头像">
         <select class="form-control" v-model="form.face">
           <option v-for="{ value, text } in options.face" :key="value" :value="value">{{ text }}</option>
         </select>
         <template #footer>
           <a href="https://github.com/Tsuk1ko/bilibili-live-chat#显示头像" target="_blank">查看说明</a>
         </template>
-      </input-group>
+      </InputGroup>
       <!-- 头像缓存 -->
-      <input-group header="头像缓存" footer="天">
+      <InputGroup header="头像缓存" footer="天">
         <input
           class="form-control"
           type="number"
@@ -65,15 +65,15 @@
           placeholder="选填，头像 URL 缓存的时间，默认为 7 天"
           v-model.number="form.faceExpireDay"
         />
-      </input-group>
+      </InputGroup>
       <!-- 弹幕排列 -->
-      <input-group header="弹幕排列">
+      <InputGroup header="弹幕排列">
         <select class="form-control" v-model="form.display">
           <option v-for="{ value, text } in options.display" :key="value" :value="value">{{ text }}</option>
         </select>
-      </input-group>
+      </InputGroup>
       <!-- 弹幕停留 -->
-      <input-group header="弹幕停留" footer="毫秒">
+      <InputGroup header="弹幕停留" footer="毫秒">
         <input
           class="form-control"
           type="number"
@@ -82,9 +82,9 @@
           placeholder="选填，弹幕过这么久后会被隐藏，仅弹幕排列为“自底部”时有效"
           v-model.number="form.stay"
         />
-      </input-group>
+      </InputGroup>
       <!-- 频率限制 -->
-      <input-group header="频率限制" footer="条/秒">
+      <InputGroup header="频率限制" footer="条/秒">
         <input
           type="number"
           min="1"
@@ -93,9 +93,9 @@
           placeholder="选填，限制弹幕频率（不包括礼物），若超出频率则会随机丢弃弹幕"
           v-model.number="form.limit"
         />
-      </input-group>
+      </InputGroup>
       <!-- 礼物合并 -->
-      <input-group header="礼物合并" footer="毫秒">
+      <InputGroup header="礼物合并" footer="毫秒">
         <input
           class="form-control"
           type="number"
@@ -104,9 +104,9 @@
           placeholder="选填，合并统计的等待时间，不知道填多少可填 5000"
           v-model.number="form.giftComb"
         />
-      </input-group>
+      </InputGroup>
       <!-- 礼物置顶 -->
-      <input-group header="礼物置顶" footer="条">
+      <InputGroup header="礼物置顶" footer="条">
         <input
           class="form-control"
           type="number"
@@ -115,9 +115,9 @@
           placeholder="选填，可将礼物置顶，与弹幕分开展示，此项相当于设置礼物区域的高度"
           v-model.number="form.giftPin"
         />
-      </input-group>
+      </InputGroup>
       <!-- 弹幕延迟 -->
-      <input-group header="弹幕延迟" footer="秒">
+      <InputGroup header="弹幕延迟" footer="秒">
         <input
           class="form-control"
           type="number"
@@ -126,22 +126,29 @@
           placeholder="选填，收到弹幕后延迟这么久才会显示"
           v-model.number="form.delay"
         />
-      </input-group>
+      </InputGroup>
       <!-- 屏蔽用户 -->
-      <input-group header="屏蔽用户" footer="">
+      <InputGroup header="屏蔽用户">
         <input
           class="form-control"
           type="text"
-          placeholder="选填，将不显示指定UID用户的弹幕和礼物，用竖杠|分隔"
+          placeholder="选填，将不显示指定UID用户的弹幕和礼物，用英文逗号(,)分隔"
           v-model="form.blockUID"
         />
-      </input-group>
+      </InputGroup>
+      <InputGroup header="自定义CSS">
+        <textarea
+          class="form-control"
+          placeholder="OBS在添加浏览器的时候可以设置自定义CSS，不需要该设置项"
+          v-model="form.customCss"
+        />
+      </InputGroup>
     </div>
   </div>
 </template>
 
 <script>
-import { defineComponent, unref, reactive, watchEffect, computed, readonly } from 'vue';
+import { defineComponent, unref, reactive, watch, computed, readonly } from 'vue';
 import InputGroup from '@/components/InputGroup.vue';
 import { sget, sset } from '@/utils/storage';
 import { defaultProps, intProps, selectOptions } from '@/utils/props';
@@ -156,9 +163,16 @@ export default defineComponent({
       ...sget('setting', {}),
     });
     intProps.forEach(key => {
-      watchEffect(() => {
-        if (typeof form[key] === 'number') form[key] = Math.max(Math.floor(form[key]), 0);
-      });
+      watch(
+        () => form[key],
+        value => {
+          if (typeof value !== 'number') return;
+          const newVal = Math.max(Math.floor(value), 0);
+          if (value === newVal) return;
+          form[key] = newVal;
+        },
+        { immediate: true }
+      );
     });
 
     const simpleForm = computed(() =>
@@ -174,8 +188,8 @@ export default defineComponent({
         Object.keys(defaultProps)
       )
     );
-    watchEffect(() => {
-      sset('setting', simpleForm.value);
+    watch(simpleForm, value => {
+      sset('setting', value);
     });
 
     return {

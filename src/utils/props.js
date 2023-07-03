@@ -15,6 +15,7 @@ export const defaultProps = {
   delay: '',
   blockUID: '',
   debug: '',
+  customCss: '',
 };
 Object.freeze(defaultProps);
 

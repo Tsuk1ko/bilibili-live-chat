@@ -1,10 +1,11 @@
 <template>
-  <danmaku-item v-if="errMsg" type="info" :message="errMsg" />
-  <live v-else-if="ready" v-bind="props" />
+  <div id="custom-css" style="display: none"></div>
+  <DanmakuItem v-if="errMsg" type="info" :message="errMsg" />
+  <Live v-else-if="ready" v-bind="props" />
 </template>
 
 <script>
-import { defineComponent, reactive, onBeforeUnmount, ref } from 'vue';
+import { defineComponent, reactive, onBeforeUnmount, ref, onMounted } from 'vue';
 import { parseProps } from '@/utils/props';
 import { setCors, autoGet } from '@/utils/request';
 import { setFaceOption } from '@/utils/face';
@@ -20,6 +21,16 @@ export default defineComponent({
     onBeforeUnmount(() => window.removeEventListener('hashchange', onHashChange));
 
     const props = reactive(parseProps(window.location.hash));
+
+    const customCss = props.customCss?.trim();
+    if (customCss) {
+      onMounted(() => {
+        const style = document.createElement('style');
+        style.innerHTML = customCss;
+        document.getElementById('custom-css')?.appendChild(style);
+      });
+    }
+
     const canCORS = props.cors === 'true';
     setCors(canCORS);
     setFaceOption({

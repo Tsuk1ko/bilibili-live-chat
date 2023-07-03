@@ -29,7 +29,7 @@ export default {
     const giftCombMap = new Map();
     const giftShowFace = computed(() => !['false', 'gift'].includes(props.face));
 
-    const blockUIDs = computed(() => new Set(props.blockUID.split('|').map(uid => uid.trim())));
+    const blockUIDs = computed(() => new Set(props.blockUID.split(/,|\|/).map(uid => uid.trim())));
     const isBlockedUID = uid => blockUIDs.value.has(String(uid));
 
     const addInfoDanmaku = message => {
