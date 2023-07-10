@@ -45,8 +45,8 @@ export default {
     };
 
     onMounted(() => {
-      console.log('正在连接直播弹幕服务器');
-      const live = new KeepLiveWS(props.room);
+      console.log('正在连接直播弹幕服务器', { room: props.room, uid: props.anchor });
+      const live = new KeepLiveWS(props.room, { uid: props.anchor });
       onBeforeUnmount(() => live.close());
       live.on('open', () => {
         console.log('已连接直播弹幕服务器');
