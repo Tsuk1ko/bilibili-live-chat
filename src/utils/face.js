@@ -1,5 +1,5 @@
 import { sget, sset } from './storage';
-import { get, autoGet } from './request';
+import { getResp, autoGetResp } from './request';
 import { debounce, fromPairs, last } from 'lodash';
 
 const getDay = () => Math.floor(Date.now() / 86400000);
@@ -10,12 +10,24 @@ const options = {
 };
 export const setFaceOption = o => Object.assign(options, o);
 
-const faceApi = uid => {
+const faceApi = async uid => {
   switch (options.method) {
-    case 'imjad':
-      return get(`https://api.obfs.dev/api/bilibili/v3/user_info?uid=${uid}&size=1`).then(r => r.data?.card?.face);
-    default:
-      return autoGet(`https://api.bilibili.com/x/web-interface/card?mid=${uid}`).then(r => r.data?.card?.face);
+    case 'imjad': {
+      const res = await getResp(`https://api.obfs.dev/api/bilibili/v3/user_info?uid=${uid}&size=1`);
+      if (res.status === 429) {
+        throw new Error('弹幕量过大，API调用超频，请关闭显示头像（可仅对礼物显示）');
+      }
+      const r = await res.json();
+      return r.data?.card?.face;
+    }
+    default: {
+      const res = await autoGetResp(`https://api.bilibili.com/x/web-interface/card?mid=${uid}`);
+      if (res.status === 412) {
+        throw new Error('弹幕量过大，API调用超频，请关闭显示头像（可仅对礼物显示）');
+      }
+      const r = await res.json();
+      return r.data?.card?.face;
+    }
   }
 };
 
