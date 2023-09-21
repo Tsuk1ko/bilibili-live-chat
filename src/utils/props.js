@@ -5,8 +5,7 @@ export const defaultProps = {
   room: '',
   anchor: '',
   cors: 'false',
-  face: 'false',
-  faceExpireDay: '',
+  face: 'true',
   display: 'bottom',
   stay: '',
   limit: '',
@@ -19,7 +18,7 @@ export const defaultProps = {
 };
 Object.freeze(defaultProps);
 
-export const intProps = ['room', 'anchor', 'faceExpireDay', 'stay', 'giftComb', 'limit', 'giftPin', 'delay'];
+export const intProps = ['room', 'anchor', 'stay', 'giftComb', 'limit', 'giftPin', 'delay'];
 Object.freeze(intProps);
 
 export const intPropsSet = new Set(intProps);
@@ -27,9 +26,7 @@ Object.freeze(intPropsSet);
 
 export const isIntProp = name => intPropsSet.has(name);
 
-const intPropsDefault = {
-  faceExpireDay: 7,
-};
+const intPropsDefault = {};
 Object.freeze(intPropsDefault);
 
 export const propsType = mapValues(defaultProps, (v, k) => (intPropsSet.has(k) ? Number : String));
@@ -39,7 +36,7 @@ export const selectOptions = {
   cors: [
     {
       value: 'false',
-      text: '关闭（所有跨域请求将依赖 codetabs，限制 5 请求/秒）',
+      text: '关闭（所有跨域请求将依赖 codetabs）',
     },
     {
       value: 'true',
@@ -48,20 +45,12 @@ export const selectOptions = {
   ],
   face: [
     {
+      value: 'true',
+      text: '显示',
+    },
+    {
       value: 'false',
       text: '不显示',
-    },
-    {
-      value: 'gift',
-      text: '仅对礼物显示，不需要额外调用 API',
-    },
-    {
-      value: 'true',
-      text: '显示，通过 Bilibili API 获取（跨域）',
-    },
-    {
-      value: 'imjad',
-      text: '显示，通过 HibiAPI 获取',
     },
   ],
   display: [

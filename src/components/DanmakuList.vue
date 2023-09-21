@@ -37,7 +37,7 @@
 import { ref, toRefs, onBeforeUnmount, nextTick, onMounted, unref } from 'vue';
 import { v4 as uuid } from 'uuid';
 import { propsType } from '@/utils/props';
-import { getFace } from '@/utils/face';
+import { getFaceLoads } from '@/utils/face';
 import loadImg from '@/utils/loadImg';
 import { sampleSize } from 'lodash';
 
@@ -103,10 +103,10 @@ export default {
 
     // 添加弹幕
     const addDanmaku = async danmaku => {
-      if (danmaku.showFace) {
-        const loads = await getFace(danmaku.uid);
+      if (danmaku.showFace && danmaku.face) {
+        const loads = getFaceLoads(danmaku.face);
         let load;
-        let [face] = loads.find(([src]) => (load = loadedMap.get(src))) || [''];
+        let [face] = loads.find(([src]) => (load = loadedMap.get(src))) || [];
         if (!face) {
           load = loadImg(loads);
           loadedMap.set(face, load);

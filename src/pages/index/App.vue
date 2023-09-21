@@ -55,17 +55,6 @@
           <a href="https://github.com/Tsuk1ko/bilibili-live-chat#显示头像" target="_blank">查看说明</a>
         </template>
       </InputGroup>
-      <!-- 头像缓存 -->
-      <InputGroup header="头像缓存" footer="天">
-        <input
-          class="form-control"
-          type="number"
-          min="0"
-          step="1"
-          placeholder="选填，头像 URL 缓存的时间，默认为 7 天"
-          v-model.number="form.faceExpireDay"
-        />
-      </InputGroup>
       <!-- 弹幕排列 -->
       <InputGroup header="弹幕排列">
         <select class="form-control" v-model="form.display">
@@ -162,6 +151,8 @@ export default defineComponent({
       ...defaultProps,
       ...sget('setting', {}),
     });
+    // 迁移
+    if (form.face !== 'false') form.face = true;
     intProps.forEach(key => {
       watch(
         () => form[key],

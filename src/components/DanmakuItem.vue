@@ -1,6 +1,9 @@
 <template>
   <div class="danmaku-item" :class="{ hidden: isHidden }">
-    <img v-if="showFace" class="danmaku-author-face" :src="face" />
+    <template v-if="showFace">
+      <img v-if="face" class="danmaku-author-face" :src="face" />
+      <div v-else class="danmaku-author-face"></div>
+    </template>
     <div v-if="type === 'message'" class="danmaku-content">
       <span class="danmaku-author-name with-colon" :class="{ anchor: isAnchor, owner: isOwner }">{{ uname }}</span>
       <span class="danmaku-message">{{ message }}</span>
@@ -83,10 +86,31 @@ export default {
     align-items: flex-start;
     transition: opacity 0.5s;
     user-select: none;
-    text-shadow: -2px -2px #000000, -2px -1px #000000, -2px 0 #000000, -2px 1px #000000, -2px 2px #000000,
-      -1px -2px #000000, -1px -1px #000000, -1px 0 #000000, -1px 1px #000000, -1px 2px #000000, 0 -2px #000000,
-      0 -1px #000000, 0 0 #000000, 0 1px #000000, 0 2px #000000, 1px -2px #000000, 1px -1px #000000, 1px 0 #000000,
-      1px 1px #000000, 1px 2px #000000, 2px -2px #000000, 2px -1px #000000, 2px 0 #000000, 2px 1px #000000,
+    text-shadow:
+      -2px -2px #000000,
+      -2px -1px #000000,
+      -2px 0 #000000,
+      -2px 1px #000000,
+      -2px 2px #000000,
+      -1px -2px #000000,
+      -1px -1px #000000,
+      -1px 0 #000000,
+      -1px 1px #000000,
+      -1px 2px #000000,
+      0 -2px #000000,
+      0 -1px #000000,
+      0 0 #000000,
+      0 1px #000000,
+      0 2px #000000,
+      1px -2px #000000,
+      1px -1px #000000,
+      1px 0 #000000,
+      1px 1px #000000,
+      1px 2px #000000,
+      2px -2px #000000,
+      2px -1px #000000,
+      2px 0 #000000,
+      2px 1px #000000,
       2px 2px #000000;
     animation: 0.5s danmakuIn;
     opacity: 1;

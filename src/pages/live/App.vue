@@ -8,7 +8,6 @@
 import { defineComponent, reactive, onBeforeUnmount, ref, onMounted } from 'vue';
 import { parseProps } from '@/utils/props';
 import { setCors, autoGet } from '@/utils/request';
-import { setFaceOption } from '@/utils/face';
 
 import Live from '@/components/Live';
 import DanmakuItem from '@/components/DanmakuItem';
@@ -33,10 +32,6 @@ export default defineComponent({
 
     const canCORS = props.cors === 'true';
     setCors(canCORS);
-    setFaceOption({
-      method: props.face,
-      expireDay: props.faceExpireDay,
-    });
 
     const ready = ref(false);
     const errMsg = ref('');
