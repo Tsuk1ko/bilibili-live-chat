@@ -1,5 +1,5 @@
 <template>
-  <div id="panel" class="panel panel-default">
+  <div id="panel" class="panel panel-default" spellcheck="false">
     <div class="panel-heading">
       <h2 class="panel-title" style="font-size: 30px; display: inline-block; margin-right: 10px">Bilibili Live Chat</h2>
       <iframe
@@ -12,8 +12,17 @@
       ></iframe>
     </div>
     <div class="panel-body">
+      <!-- 认证模式 -->
+      <InputGroup header="认证模式">
+        <select class="form-control" v-model="form.auth">
+          <option v-for="{ value, text } in options.auth" :key="value" :value="value">{{ text }}</option>
+        </select>
+        <template #footer>
+          <a href="https://github.com/Tsuk1ko/bilibili-live-chat#显示头像" target="_blank">查看说明</a>
+        </template>
+      </InputGroup>
       <!-- 直播间号 -->
-      <InputGroup header="直播间号">
+      <InputGroup v-if="form.auth === 'guest'" header="直播间号">
         <input
           class="form-control"
           type="number"
@@ -26,6 +35,41 @@
           <button class="btn btn-primary" type="button" :disabled="!form.room" @click="goLive">Go!</button>
         </span>
       </InputGroup>
+      <template v-else-if="form.auth === 'open'">
+        <!-- AKId -->
+        <InputGroup header="AKId">
+          <input
+            class="form-control"
+            type="text"
+            placeholder="必填，开放平台 - 个人资料 - access_key_id"
+            v-model="form.akId"
+          />
+        </InputGroup>
+        <!-- AKSecred -->
+        <InputGroup header="AKSecred">
+          <input
+            class="form-control"
+            type="text"
+            placeholder="必填，开放平台 - 个人资料 - access_key_secred"
+            v-model="form.akSecred"
+          />
+        </InputGroup>
+        <!-- AppId -->
+        <InputGroup header="AppId">
+          <input
+            class="form-control"
+            type="number"
+            min="0"
+            step="1"
+            placeholder="必填，开放平台 - 我的项目 - 项目ID"
+            v-model.number="form.appId"
+          />
+        </InputGroup>
+        <!-- 身份码 -->
+        <InputGroup header="身份码">
+          <input class="form-control" type="text" placeholder="必填，直播间开播后可见" v-model="form.code" />
+        </InputGroup>
+      </template>
       <!-- 主播UID -->
       <InputGroup header="主播UID">
         <input
@@ -33,7 +77,11 @@
           type="number"
           min="0"
           step="1"
-          placeholder="如果获取房间信息失败才需要手动填写此项，并且此时直播间号请填写长号而非短号"
+          :placeholder="
+            form.auth === 'guest'
+              ? '如果获取房间信息失败才需要手动填写此项，并且此时直播间号请填写长号而非短号'
+              : '选填，不填则通过API获取'
+          "
           v-model.number="form.anchor"
         />
       </InputGroup>
@@ -142,7 +190,7 @@ import InputGroup from '@/components/InputGroup.vue';
 import { sget, sset } from '@/utils/storage';
 import { defaultProps, intProps, selectOptions } from '@/utils/props';
 import { stringify as qss } from 'query-string';
-import { fromPairs, pick } from 'lodash';
+import { fromPairs, pick, omit } from 'lodash';
 
 export default defineComponent({
   components: { InputGroup },
@@ -183,9 +231,22 @@ export default defineComponent({
       sset('setting', value);
     });
 
+    const getFinalForm = () => {
+      let data = simpleForm.value;
+      switch (form.auth) {
+        case 'guest':
+          data = omit(data, ['akId', 'akSecred', 'appId', 'code']);
+          break;
+        case 'open':
+          data = omit(data, ['room']);
+          break;
+      }
+      return data;
+    };
+
     return {
       form,
-      goLive: () => (window.location.href = `live.html#${qss(simpleForm.value)}`),
+      goLive: () => (window.location.href = `live.html#${qss(getFinalForm())}`),
       options: readonly(selectOptions),
     };
   },

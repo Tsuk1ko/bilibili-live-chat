@@ -2,6 +2,11 @@ import { parse as qsp } from 'query-string';
 import { mapValues, pick } from 'lodash';
 
 export const defaultProps = {
+  auth: 'guest',
+  akId: '',
+  akSecred: '',
+  appId: '',
+  code: '',
   room: '',
   anchor: '',
   cors: 'false',
@@ -18,7 +23,7 @@ export const defaultProps = {
 };
 Object.freeze(defaultProps);
 
-export const intProps = ['room', 'anchor', 'stay', 'giftComb', 'limit', 'giftPin', 'delay'];
+export const intProps = ['room', 'anchor', 'stay', 'giftComb', 'limit', 'giftPin', 'delay', 'appId'];
 Object.freeze(intProps);
 
 export const intPropsSet = new Set(intProps);
@@ -33,6 +38,16 @@ export const propsType = mapValues(defaultProps, (v, k) => (intPropsSet.has(k) ?
 Object.freeze(propsType);
 
 export const selectOptions = {
+  auth: [
+    {
+      value: 'guest',
+      text: '游客模式',
+    },
+    {
+      value: 'open',
+      text: '开放平台',
+    },
+  ],
   cors: [
     {
       value: 'false',
