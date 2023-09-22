@@ -1,9 +1,16 @@
+import { LRUCache } from 'lru-cache';
+import loadImg from './loadImg';
+import { last } from 'lodash';
+
 // const NO_FACE = 'https://i0.hdslb.com/bfs/face/member/noface.jpg';
 
 // 不用缓存了
 window.localStorage.removeItem('blc-face');
 
-export const getFaceLoads = face => {
+/** @type {LRUCache<string, string | Promise<string>>} */
+const cache = new LRUCache({ max: 500, ttl: 600 * 1000, updateAgeOnGet: true });
+
+const getFaceLoads = face => {
   const smallFace = getSmallFace(face);
   if (smallFace) {
     return [
@@ -17,4 +24,18 @@ export const getFaceLoads = face => {
 const getSmallFace = url => {
   if (url.endsWith('.gif') || url.includes('noface')) return;
   return url.replace(/(\.[^./]+$)/, '$1_48x48$1');
+};
+
+export const loadFace = async (uid, url) => {
+  const key = uid || last(url.split('/'));
+  if (cache.has(key)) return cache.get(key);
+
+  const loads = getFaceLoads(url);
+  const loadPromise = loadImg(loads);
+  cache.set(key, loadPromise);
+  const finalUrl = await loadPromise;
+  cache.set(key, finalUrl);
+  console.log('finalUrl: ', finalUrl);
+
+  return finalUrl;
 };

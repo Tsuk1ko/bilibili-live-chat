@@ -24,6 +24,7 @@ const loadImg = (url, timeout) =>
     xhr.send();
   });
 
+/** @returns {Promise<string>} */
 export default async loads => {
   for (const [url, timeout] of loads) {
     const loaded = await loadImg(url, timeout).catch(() => {
@@ -31,5 +32,5 @@ export default async loads => {
     });
     if (loaded) return loaded;
   }
-  return loads[0][0] || '';
+  return loads[0][0];
 };

@@ -154,13 +154,10 @@ export default {
       );
 
       // 舰长
-      live.on('USER_TOAST_MSG', fullData => {
-        const {
-          data: { uid, username: uname, role_name: giftName, num },
-        } = fullData;
+      live.on('USER_TOAST_MSG', ({ data: { uid, username: uname, role_name: giftName, num } }) => {
         giftList.value.addDanmaku({
           type: 'gift',
-          showFace: false,
+          showFace: showFace.value,
           uid,
           uname,
           giftName,
