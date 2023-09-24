@@ -10,31 +10,38 @@
         height="30px"
         style="vertical-align: bottom"
       ></iframe>
+      <button class="btn btn-primary" type="button" :disabled="!form.room" @click="goLive">Go!</button>
+      <button class="btn" :class="copyLinkClass" type="button" :disabled="!form.room" @click="copyLink">
+        {{ copyLinkText }}
+      </button>
     </div>
     <div class="panel-body">
-      <!-- 认证模式 -->
-      <InputGroup header="认证模式">
+      <!-- 连接模式 -->
+      <InputGroup header="连接模式">
         <select class="form-control" v-model="form.auth">
           <option v-for="{ value, text } in options.auth" :key="value" :value="value">{{ text }}</option>
         </select>
         <template #footer>
-          <a href="https://github.com/Tsuk1ko/bilibili-live-chat#显示头像" target="_blank">查看说明</a>
+          <a href="https://github.com/Tsuk1ko/bilibili-live-chat#连接模式" target="_blank">查看说明</a>
         </template>
       </InputGroup>
-      <!-- 直播间号 -->
-      <InputGroup v-if="form.auth === 'guest'" header="直播间号">
-        <input
-          class="form-control"
-          type="number"
-          min="0"
-          step="1"
-          placeholder="必填，支持短号"
-          v-model.number="form.room"
-        />
-        <span class="input-group-btn">
-          <button class="btn btn-primary" type="button" :disabled="!form.room" @click="goLive">Go!</button>
-        </span>
-      </InputGroup>
+      <template v-if="form.auth === 'normal'">
+        <!-- 直播间号 -->
+        <InputGroup header="直播间号">
+          <input
+            class="form-control"
+            type="number"
+            min="0"
+            step="1"
+            placeholder="必填，支持短号"
+            v-model.number="form.room"
+          />
+        </InputGroup>
+        <!-- Cookie -->
+        <InputGroup header="Cookie">
+          <input class="form-control" type="text" placeholder="选填，不填则为游客模式" v-model="form.cookie" />
+        </InputGroup>
+      </template>
       <template v-else-if="form.auth === 'open'">
         <!-- AKId -->
         <InputGroup header="AKId">
@@ -45,13 +52,13 @@
             v-model="form.akId"
           />
         </InputGroup>
-        <!-- AKSecred -->
-        <InputGroup header="AKSecred">
+        <!-- AKSecret -->
+        <InputGroup header="AKSecret">
           <input
             class="form-control"
             type="text"
-            placeholder="必填，开放平台 - 个人资料 - access_key_secred"
-            v-model="form.akSecred"
+            placeholder="必填，开放平台 - 个人资料 - access_key_secret"
+            v-model="form.akSecret"
           />
         </InputGroup>
         <!-- AppId -->
@@ -70,28 +77,13 @@
           <input class="form-control" type="text" placeholder="必填，直播间开播后可见" v-model="form.code" />
         </InputGroup>
       </template>
-      <!-- 主播UID -->
-      <InputGroup header="主播UID">
-        <input
-          class="form-control"
-          type="number"
-          min="0"
-          step="1"
-          :placeholder="
-            form.auth === 'guest'
-              ? '如果获取房间信息失败才需要手动填写此项，并且此时直播间号请填写长号而非短号'
-              : '选填，不填则通过API获取'
-          "
-          v-model.number="form.anchor"
-        />
-      </InputGroup>
-      <!-- 直接跨域 -->
-      <InputGroup header="直接跨域">
+      <!-- 跨域模式 -->
+      <InputGroup header="跨域模式">
         <select class="form-control" v-model="form.cors">
           <option v-for="{ value, text } in options.cors" :key="value" :value="value">{{ text }}</option>
         </select>
         <template #footer>
-          <a href="https://github.com/Tsuk1ko/bilibili-live-chat#直接跨域" target="_blank">查看说明</a>
+          <a href="https://github.com/Tsuk1ko/bilibili-live-chat#跨域模式" target="_blank">查看说明</a>
         </template>
       </InputGroup>
       <!-- 显示头像 -->
@@ -99,9 +91,6 @@
         <select class="form-control" v-model="form.face">
           <option v-for="{ value, text } in options.face" :key="value" :value="value">{{ text }}</option>
         </select>
-        <template #footer>
-          <a href="https://github.com/Tsuk1ko/bilibili-live-chat#显示头像" target="_blank">查看说明</a>
-        </template>
       </InputGroup>
       <!-- 弹幕排列 -->
       <InputGroup header="弹幕排列">
@@ -185,7 +174,7 @@
 </template>
 
 <script>
-import { defineComponent, unref, reactive, watch, computed, readonly } from 'vue';
+import { defineComponent, unref, reactive, watch, computed, readonly, ref } from 'vue';
 import InputGroup from '@/components/InputGroup.vue';
 import { sget, sset } from '@/utils/storage';
 import { defaultProps, intProps, selectOptions } from '@/utils/props';
@@ -234,8 +223,8 @@ export default defineComponent({
     const getFinalForm = () => {
       let data = simpleForm.value;
       switch (form.auth) {
-        case 'guest':
-          data = omit(data, ['akId', 'akSecred', 'appId', 'code']);
+        case 'normal':
+          data = omit(data, ['akId', 'akSecret', 'appId', 'code']);
           break;
         case 'open':
           data = omit(data, ['room']);
@@ -244,16 +233,46 @@ export default defineComponent({
       return data;
     };
 
+    const copyLinkStatus = ref('');
+    const copyLinkClass = computed(() => (copyLinkStatus.value ? `btn-${copyLinkStatus.value}` : 'btn-primary'));
+    const copyLinkText = computed(() => {
+      switch (copyLinkStatus.value) {
+        case 'success':
+          return '复制成功';
+        case 'error':
+          return '复制失败';
+        default:
+          return '复制链接';
+      }
+    });
+
+    const copyLink = async () => {
+      if (copyLinkStatus.value) return;
+      try {
+        await navigator.clipboard.writeText(new URL(`live.html#${qss(getFinalForm())}`, location.origin).href);
+        copyLinkStatus.value = 'success';
+      } catch {
+        copyLinkStatus.value = 'error';
+      } finally {
+        setTimeout(() => {
+          copyLinkStatus.value = '';
+        }, 2000);
+      }
+    };
+
     return {
       form,
       goLive: () => (window.location.href = `live.html#${qss(getFinalForm())}`),
+      copyLink,
+      copyLinkClass,
+      copyLinkText,
       options: readonly(selectOptions),
     };
   },
 });
 </script>
 
-<style>
+<style lang="scss">
 body,
 html {
   width: 100%;
@@ -281,6 +300,13 @@ body {
 }
 #panel {
   margin: 0;
+  .btn {
+    float: right;
+    margin-left: 8px;
+  }
+}
+.btn {
+  outline: none !important;
 }
 .form-control {
   box-shadow: none !important;

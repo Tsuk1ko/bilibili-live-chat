@@ -1,14 +1,14 @@
 import md5 from 'md5';
-import { get } from './request';
+import { autoGet } from './request';
 
 /**
  * 鉴权加密
  * @param {*} params
  * @param {string} akId
- * @param {string} akSecred
+ * @param {string} akSecret
  * @returns
  */
-async function getEncodeHeader(body, akId, akSecred) {
+async function getEncodeHeader(body, akId, akSecret) {
   const timestamp = parseInt(Date.now() / 1000 + '');
   const nonce = parseInt(Math.random() * 100000 + '') + timestamp;
   const header = {
@@ -24,7 +24,7 @@ async function getEncodeHeader(body, akId, akSecred) {
     data.push(`${key}:${header[key]}`);
   }
 
-  const signature = await getHmacSha256(akSecred, data.join('\n'));
+  const signature = await getHmacSha256(akSecret, data.join('\n'));
   return {
     Accept: 'application/json',
     'Content-Type': 'application/json',
@@ -58,24 +58,25 @@ const START_URL = 'https://live-open.biliapi.com/v2/app/start';
 // const HEARTBEAT_URL = 'https://live-open.biliapi.com/v2/app/heartbeat';
 const END_URL = 'https://live-open.biliapi.com/v2/app/end';
 
-async function callApi(url, data, akId, akSecred) {
+async function callApi(url, data, akId, akSecret) {
   const body = JSON.stringify(data);
-  const headers = await getEncodeHeader(body, akId, akSecred);
-  return get(url, { method: 'POST', headers, body });
+  const headers = await getEncodeHeader(body, akId, akSecret);
+  return autoGet(url, { method: 'POST', headers, body });
 }
 
 /**
  * @param {string} akId
- * @param {string} akSecred
+ * @param {string} akSecret
  * @param {number} appId
  * @param {string} code
  */
-export async function getOpenData(akId, akSecred, appId, code) {
-  const { data } = await callApi(START_URL, { code, app_id: appId }, akId, akSecred);
+export async function getOpenData(akId, akSecret, appId, code) {
+  const { code: retCode, message, data } = await callApi(START_URL, { code, app_id: appId }, akId, akSecret);
+  if (retCode !== 0) throw new Error(message);
   console.log('open data', data);
   const gameId = data.game_info.game_id;
   if (gameId) {
-    callApi(END_URL, { app_id: appId, game_id: data.game_info.game_id }, akId, akSecred).catch(console.error);
+    callApi(END_URL, { app_id: appId, game_id: data.game_info.game_id }, akId, akSecret).catch(console.error);
   }
   return data;
 }

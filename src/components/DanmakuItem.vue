@@ -11,10 +11,12 @@
     <div v-else-if="type === 'gift'" class="danmaku-content">
       <span class="danmaku-message">感谢&nbsp;</span>
       <span class="danmaku-author-name">{{ uname }}</span>
-      <span class="danmaku-message">&nbsp;赠送&nbsp;</span>
+      <span class="danmaku-message">&nbsp;赠送的&nbsp;</span>
       <span class="danmaku-gift-name">{{ giftName }}</span>
-      <span class="danmaku-message">&nbsp;×&nbsp;</span>
-      <span class="danmaku-gift-num">{{ num }}</span>
+      <template v-if="num">
+        <span class="danmaku-message">&nbsp;×&nbsp;</span>
+        <span class="danmaku-gift-num">{{ num }}</span>
+      </template>
     </div>
     <div v-else-if="type === 'sc'" class="danmaku-content">
       <span class="danmaku-message">感谢&nbsp;</span>
@@ -22,7 +24,7 @@
       <span class="danmaku-message">&nbsp;的SC：{{ message }}</span>
     </div>
     <div v-else-if="type === 'info'" class="danmaku-content">
-      <span class="danmaku-message">{{ message }}</span>
+      <span class="danmaku-message info">{{ message }}</span>
     </div>
   </div>
 </template>
@@ -43,7 +45,6 @@ export default {
     message: String,
     isAnchor: Boolean,
     isOwner: Boolean,
-    action: String,
     giftName: String,
     num: Number,
     stay: Number,
@@ -156,6 +157,9 @@ export default {
     font-family: 'Imprima', 'Microsoft YaHei';
     font-size: 18px;
     line-height: 18px;
+    &.info {
+      white-space: pre;
+    }
   }
   &-gift-num {
     font-family: 'Imprima', 'Microsoft YaHei';

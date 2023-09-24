@@ -2,13 +2,13 @@ import { parse as qsp } from 'query-string';
 import { mapValues, pick } from 'lodash';
 
 export const defaultProps = {
-  auth: 'guest',
+  auth: 'normal',
   akId: '',
-  akSecred: '',
+  akSecret: '',
   appId: '',
   code: '',
   room: '',
-  anchor: '',
+  cookie: '',
   cors: 'false',
   face: 'true',
   display: 'bottom',
@@ -23,7 +23,7 @@ export const defaultProps = {
 };
 Object.freeze(defaultProps);
 
-export const intProps = ['room', 'anchor', 'stay', 'giftComb', 'limit', 'giftPin', 'delay', 'appId'];
+export const intProps = ['room', 'stay', 'giftComb', 'limit', 'giftPin', 'delay', 'appId'];
 Object.freeze(intProps);
 
 export const intPropsSet = new Set(intProps);
@@ -40,8 +40,8 @@ Object.freeze(propsType);
 export const selectOptions = {
   auth: [
     {
-      value: 'guest',
-      text: '游客模式',
+      value: 'normal',
+      text: '普通模式',
     },
     {
       value: 'open',
@@ -51,7 +51,7 @@ export const selectOptions = {
   cors: [
     {
       value: 'false',
-      text: '关闭（所有跨域请求将依赖 codetabs）',
+      text: '关闭（所有跨域请求将依赖反代服务）',
     },
     {
       value: 'true',
