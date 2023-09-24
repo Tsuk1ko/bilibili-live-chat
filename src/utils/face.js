@@ -30,7 +30,7 @@ export const loadFace = async (uid, url) => {
   const key = uid || last(url.split('/'));
   if (cache.has(key)) return cache.get(key);
 
-  const loads = getFaceLoads(url);
+  const loads = getFaceLoads(url.replace(/^http:/, 'https:'));
   const loadPromise = loadImg(loads);
   cache.set(key, loadPromise);
   const finalUrl = await loadPromise;
