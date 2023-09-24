@@ -158,7 +158,7 @@ export default {
     font-size: 18px;
     line-height: 18px;
     &.info {
-      white-space: pre;
+      white-space: pre-wrap;
     }
   }
   &-gift-num {

@@ -4,8 +4,7 @@ let canCORS = true;
 
 export const setCors = bool => (canCORS = bool);
 
-export const getResp = (url, options = {}) =>
-  fetch(url, { referrer: '', referrerPolicy: 'no-referrer', mode: 'no-cors', ...options });
+export const getResp = (url, options = {}) => fetch(url, { referrer: '', referrerPolicy: 'no-referrer', ...options });
 
 export const get = (url, options) => getResp(url, options).then(r => r.json());
 
