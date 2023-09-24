@@ -227,7 +227,7 @@ export default defineComponent({
           data = omit(data, ['akId', 'akSecret', 'appId', 'code']);
           break;
         case 'open':
-          data = omit(data, ['room']);
+          data = omit(data, ['room', 'cookie']);
           break;
       }
       return data;
