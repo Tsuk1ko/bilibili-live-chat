@@ -38,8 +38,6 @@ export default defineComponent({
     const ready = ref(false);
     const errMsg = ref('');
 
-    console.log('props', props);
-
     if (props.auth === 'open') {
       getOpenData(props.akId, props.akSecret, parseInt(props.appId), props.code)
         .then(data => {

@@ -78,7 +78,6 @@ export default {
           live.close();
         }
       });
-      live.on('msg', console.log);
 
       // 礼物
       const giftList = props.giftPin ? giftPinList : danmakuList;

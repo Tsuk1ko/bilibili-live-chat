@@ -73,7 +73,6 @@ async function callApi(url, data, akId, akSecret) {
 export async function getOpenData(akId, akSecret, appId, code) {
   const { code: retCode, message, data } = await callApi(START_URL, { code, app_id: appId }, akId, akSecret);
   if (retCode !== 0) throw new Error(message);
-  console.log('open data', data);
   const gameId = data.game_info.game_id;
   if (gameId) {
     callApi(END_URL, { app_id: appId, game_id: data.game_info.game_id }, akId, akSecret).catch(console.error);
