@@ -47,7 +47,7 @@ B站 API 无法被跨域调用，若不开启跨域模式，则会使用我个�
 
 若在 OBS 使用，则推荐开启跨域模式，方法如下：
 
-任何基于 Chromium 的浏览器（例如 OBS Browser 和 Chrome）都可以通过添加 `--disable-web-security` 启动参数来禁用网页安全机制，此时可以开启“跨域模式”选项，几乎所有B站 API 将被跨域模式调用（需要 cookie 的除外），这样就不需要依赖反代服务
+任何基于 Chromium 的浏览器（例如 OBS Browser 和 Chrome）都可以通过添加 `--disable-web-security` 启动参数来禁用网页安全机制，此时可以开启“跨域模式”选项，几乎所有B站 API 将被直接跨域调用（需要 cookie 的除外），这样就不需要依赖反代服务
 
 示例：
 
