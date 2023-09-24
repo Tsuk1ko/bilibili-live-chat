@@ -1,13 +1,14 @@
 <template>
   <div id="custom-css" style="display: none"></div>
   <DanmakuItem v-if="errMsg" type="info" :message="errMsg" />
-  <Live v-else-if="ready" v-bind="props" />
+  <Live v-else-if="ready" v-bind="props" :live-ws-options="liveWsOptions" />
 </template>
 
 <script>
-import { defineComponent, reactive, onBeforeUnmount, ref, onMounted } from 'vue';
+import { defineComponent, reactive, onBeforeUnmount, ref, onMounted, shallowRef } from 'vue';
 import { parseProps } from '@/utils/props';
-import { setCors, autoGet } from '@/utils/request';
+import { setCors, autoGet, corsGet } from '@/utils/request';
+import { getOpenData } from '@/utils/biliOpen';
 
 import Live from '@/components/Live';
 import DanmakuItem from '@/components/DanmakuItem';
@@ -20,6 +21,7 @@ export default defineComponent({
     onBeforeUnmount(() => window.removeEventListener('hashchange', onHashChange));
 
     const props = reactive(parseProps(window.location.hash));
+    const liveWsOptions = shallowRef();
 
     const customCss = props.customCss?.trim();
     if (customCss) {
@@ -36,24 +38,89 @@ export default defineComponent({
     const ready = ref(false);
     const errMsg = ref('');
 
-    if (props.anchor) {
-      ready.value = true;
-    } else {
-      // 获取房间信息
-      autoGet(`https://api.live.bilibili.com/room/v1/Room/room_init?id=${props.room}`)
-        .then(({ code, msg, data: { room_id, uid } }) => {
-          if (code === 0) {
-            props.room = parseInt(room_id);
-            props.anchor = parseInt(uid);
-            ready.value = true;
-          } else {
-            errMsg.value = msg;
-          }
+    console.log('props', props);
+
+    if (props.auth === 'open') {
+      getOpenData(props.akId, props.akSecret, parseInt(props.appId), props.code)
+        .then(data => {
+          props.room = data.anchor_info.room_id;
+          props.anchor = data.anchor_info.uid;
+          liveWsOptions.value = {
+            address: data.websocket_info.wss_link[0],
+            authBody: JSON.parse(data.websocket_info.auth_body),
+          };
+          ready.value = true;
         })
-        .catch(() => {
-          errMsg.value = '获取房间信息失败';
-          if (canCORS) errMsg.value += '，请检查是否正确禁用了浏览器的 web security 以允许直接跨域';
+        .catch(e => {
+          let msg = '开放平台开启失败';
+          if (canCORS) msg += '，请检查是否正确禁用了浏览器的 web security 以允许直接跨域';
+          msg += `\n${e}`;
+          errMsg.value = msg;
         });
+    } else {
+      (async () => {
+        const eMsg = [];
+
+        // 获取房间信息
+        const getRoomInfoSuccess = autoGet(`https://api.live.bilibili.com/room/v1/Room/room_init?id=${props.room}`)
+          .then(({ code, msg, data: { room_id, uid } }) => {
+            if (code === 0) {
+              props.room = parseInt(room_id);
+              props.anchor = parseInt(uid);
+              return true;
+            }
+            eMsg.push(msg);
+            return false;
+          })
+          .catch(e => {
+            eMsg.push(`获取房间信息失败${canCORS ? '，请检查是否正确禁用了浏览器的 web security 以允许直接跨域' : ''}`);
+            eMsg.push(String(e));
+            return false;
+          });
+
+        if (props.cookie) {
+          const buvid = /\bbuvid3=([^;]+)\b/.exec(props.cookie)?.[1];
+          const uid = /\bDedeUserID=([^;]+)\b/.exec(props.cookie)?.[1];
+          if (buvid && uid) {
+            await corsGet(`https://api.live.bilibili.com/xlive/web-room/v1/index/getDanmuInfo?id=${7777}&type=0`, {
+              headers: { Cookie: props.cookie },
+            })
+              .then(async ({ code, message, data: { token, host_list } }) => {
+                if (!(await getRoomInfoSuccess)) return;
+                if (code === 0) {
+                  liveWsOptions.value = {
+                    address: `wss://${host_list[0].host}/sub`,
+                    authBody: {
+                      uid: parseInt(uid),
+                      roomid: props.room,
+                      protover: 3,
+                      buvid,
+                      platform: 'web',
+                      type: 2,
+                      key: token,
+                    },
+                  };
+                } else {
+                  eMsg.push(message);
+                }
+              })
+              .catch(e => {
+                eMsg.push(
+                  `获取 token 失败${canCORS ? '，请检查是否正确禁用了浏览器的 web security 以允许直接跨域' : ''}`
+                );
+                eMsg.push(String(e));
+              });
+          }
+        }
+
+        await getRoomInfoSuccess;
+
+        if (eMsg.length) {
+          errMsg.value = eMsg.join('\n');
+        } else {
+          ready.value = true;
+        }
+      })();
     }
 
     if (props.debug) {
@@ -62,7 +129,7 @@ export default defineComponent({
       });
     }
 
-    return { props, ready, errMsg };
+    return { props, ready, errMsg, liveWsOptions };
   },
 });
 </script>

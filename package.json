@@ -1,6 +1,6 @@
 {
   "name": "bilibili-live-chat",
-  "version": "2.6.0",
+  "version": "2.7.0",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -15,6 +15,7 @@
     "core-js": "^3.32.2",
     "lodash": "^4.17.21",
     "lru-cache": "^10.0.1",
+    "md5": "^2.3.0",
     "pako": "^2.1.0",
     "protobufjs": "^7.2.5",
     "query-string": "^7.1.3",

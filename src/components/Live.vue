@@ -21,7 +21,11 @@ import DanmakuList from '@/components/DanmakuList';
 
 export default {
   components: { DanmakuList },
-  props: propsType,
+  props: {
+    ...propsType,
+    anchor: Number,
+    liveWsOptions: Object,
+  },
   setup(props) {
     const giftPinList = ref(null);
     const danmakuList = ref(null);
@@ -31,6 +35,8 @@ export default {
 
     const blockUIDs = computed(() => new Set(props.blockUID.split(/,|\|/).map(uid => uid.trim())));
     const isBlockedUID = uid => blockUIDs.value.has(String(uid));
+
+    let failedTimestamps = [];
 
     const addInfoDanmaku = message => {
       danmakuList.value.addDanmaku({
@@ -45,22 +51,44 @@ export default {
     };
 
     onMounted(() => {
-      console.log('正在连接直播弹幕服务器', { room: props.room, uid: props.anchor });
-      const live = new KeepLiveWS(props.room, { protover: 3, uid: 0 });
+      console.log('正在连接直播弹幕服务器', props.room);
+      const live = new KeepLiveWS(props.room, props.liveWsOptions || { protover: 3, uid: 0 });
+      live.interval = 1000;
       onBeforeUnmount(() => live.close());
       live.on('open', () => {
+        if (live.closed) return;
         console.log('已连接直播弹幕服务器');
         addInfoDanmaku('已连接直播弹幕服务器');
       });
       live.on('live', () => {
+        if (live.closed) return;
         console.log('已连接直播间', props.room);
         addInfoDanmaku(`已连接直播间 ${props.room}`);
       });
-      live.on('close', () => console.log('已断开与直播弹幕服务器的连接'));
+      live.on('close', () => {
+        if (live.closed) return;
+        console.log('连接已断开');
+        addInfoDanmaku('连接已断开');
+        const now = Date.now();
+        failedTimestamps = failedTimestamps.filter(time => now - time < 10000);
+        failedTimestamps.push(now);
+        if (failedTimestamps.length >= 3) {
+          console.log('连接失败过于频繁，停止重连');
+          addInfoDanmaku('连接失败过于频繁，停止重连');
+          live.close();
+        }
+      });
+      live.on('msg', console.log);
 
       // 礼物
       const giftList = props.giftPin ? giftPinList : danmakuList;
-      live.on('SEND_GIFT', ({ data: { uid, uname, action, giftName, num, face } }) => {
+      live.on('SEND_GIFT', ({ data }) => {
+        handleSendGift(data);
+      });
+      live.on('LIVE_OPEN_PLATFORM_SEND_GIFT', ({ data: { uid, uname, gift_name, gift_num, uface } }) => {
+        handleSendGift({ uid, uname, giftName: gift_name, num: gift_num, face: uface });
+      });
+      const handleSendGift = ({ uid, uname, giftName, num, face }) => {
         if (isBlockedUID(uid)) {
           console.log(`屏蔽了来自[${uname}]的礼物：${giftName}*${num}`);
           return;
@@ -79,7 +107,6 @@ export default {
               showFace: showFace.value,
               uid,
               uname,
-              action,
               giftName,
               num,
               face,
@@ -95,16 +122,21 @@ export default {
             showFace: showFace.value,
             uid,
             uname,
-            action,
             giftName,
             num,
             face,
           });
         }
-      });
+      };
 
       // 弹幕
-      live.on('DANMU_MSG', ({ info: [, message, [uid, uname, isOwner /*, isVip, isSvip*/]], dm_v2 }) => {
+      live.on('DANMU_MSG', ({ info: [, message, [uid, uname, isOwner]], dm_v2 }) => {
+        handleDanmaku({ uid, uname, message, isOwner, dmV2: dm_v2 });
+      });
+      live.on('LIVE_OPEN_PLATFORM_DM', ({ data: { uid, uname, msg, uface } }) => {
+        handleDanmaku({ uid, uname, message: msg, face: uface });
+      });
+      const handleDanmaku = ({ uid, uname, message, isOwner, dmV2, face }) => {
         if (isBlockedUID(uid)) {
           console.log(`屏蔽了来自[${uname}]的弹幕：${message}`);
           return;
@@ -117,20 +149,21 @@ export default {
           message,
           isAnchor: uid === props.anchor,
           isOwner: !!isOwner,
+          face,
         };
-        if (dm_v2) {
+        if (dmV2) {
           try {
             const {
               user: { face },
-            } = decodeDmV2(dm_v2);
+            } = decodeDmV2(dmV2);
             danmaku.face = face;
           } catch (error) {
-            console.error('[decode dm_v2 error]', error);
+            console.error('[decode dmV2 error]', error);
           }
         }
         if (props.delay > 0) setTimeout(() => addDanmaku(danmaku), props.delay * 1000);
         else addDanmaku(danmaku);
-      });
+      };
 
       // SC
       live.on(
@@ -142,28 +175,62 @@ export default {
             message,
           },
         }) => {
-          giftList.value.addDanmaku({
-            type: 'sc',
-            showFace: showFace.value,
+          handleSuperChat({ uid, uname, message, face });
+        }
+      );
+      live.on('LIVE_OPEN_PLATFORM_SUPER_CHAT', ({ data: { uid, uname, message, uface } }) => {
+        handleSuperChat({ uid, uname, message, face: uface });
+      });
+      const handleSuperChat = ({ uid, uname, message, face }) => {
+        giftList.value.addDanmaku({
+          type: 'sc',
+          showFace: showFace.value,
+          uid,
+          uname,
+          message,
+          face,
+        });
+      };
+
+      // 舰长
+      const guardLevelMap = { 1: '总督', 2: '提督', 3: '舰长' };
+      live.on('GUARD_BUY', ({ data: { uid, username, gift_name, num } }) => {
+        handleGuard({ uid, uname: username, giftName: gift_name, num });
+      });
+      live.on('USER_TOAST_MSG', ({ data: { uid, username, role_name, num, unit } }) => {
+        handleGuard({ uid, uname: username, giftName: role_name, num, unit });
+      });
+      live.on(
+        'LIVE_OPEN_PLATFORM_GUARD',
+        ({
+          data: {
+            user_info: { uid, uname, uface },
+            guard_level,
+            guard_num,
+            guard_unit,
+          },
+        }) => {
+          handleGuard({
             uid,
             uname,
-            message,
-            face,
+            giftName: guardLevelMap[guard_level],
+            num: guard_num,
+            unit: guard_unit,
+            face: uface,
           });
         }
       );
-
-      // 舰长
-      live.on('USER_TOAST_MSG', ({ data: { uid, username: uname, role_name: giftName, num } }) => {
+      const handleGuard = ({ uid, uname, giftName, num, unit, face }) => {
         giftList.value.addDanmaku({
           type: 'gift',
           showFace: showFace.value,
           uid,
           uname,
-          giftName,
-          num,
+          giftName: unit ? `${num}个${unit}${giftName}` : giftName,
+          num: unit ? 0 : num,
+          face,
         });
-      });
+      };
     });
 
     return { props, showFace, giftPinList, danmakuList };

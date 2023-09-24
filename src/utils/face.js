@@ -35,7 +35,6 @@ export const loadFace = async (uid, url) => {
   cache.set(key, loadPromise);
   const finalUrl = await loadPromise;
   cache.set(key, finalUrl);
-  console.log('finalUrl: ', finalUrl);
 
   return finalUrl;
 };
