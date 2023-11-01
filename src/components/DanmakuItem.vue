@@ -1,9 +1,6 @@
 <template>
   <div class="danmaku-item" :class="{ hidden: isHidden }">
-    <template v-if="showFace">
-      <img v-if="face" class="danmaku-author-face" :src="face" />
-      <div v-else class="danmaku-author-face"></div>
-    </template>
+    <img v-if="showFace && face" class="danmaku-author-face" :src="face" />
     <div v-if="type === 'message'" class="danmaku-content">
       <span class="danmaku-author-name with-colon" :class="{ anchor: isAnchor, owner: isOwner }">{{ uname }}</span>
       <span class="danmaku-message">{{ message }}</span>

@@ -80,9 +80,12 @@ export default defineComponent({
           const buvid = /\bbuvid3=([^;]+)\b/.exec(props.cookie)?.[1];
           const uid = /\bDedeUserID=([^;]+)\b/.exec(props.cookie)?.[1];
           if (buvid && uid) {
-            await corsGet(`https://api.live.bilibili.com/xlive/web-room/v1/index/getDanmuInfo?id=${7777}&type=0`, {
-              headers: { Cookie: props.cookie },
-            })
+            await corsGet(
+              `https://api.live.bilibili.com/xlive/web-room/v1/index/getDanmuInfo?id=${props.room}&type=0`,
+              {
+                headers: { Cookie: props.cookie },
+              }
+            )
               .then(async ({ code, message, data: { token, host_list } }) => {
                 if (!(await getRoomInfoSuccess)) return;
                 if (code === 0) {
