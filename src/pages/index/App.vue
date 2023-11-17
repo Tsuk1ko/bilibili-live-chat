@@ -10,8 +10,8 @@
         height="30px"
         style="vertical-align: bottom"
       ></iframe>
-      <button class="btn btn-primary" type="button" :disabled="!form.room" @click="goLive">Go!</button>
-      <button class="btn" :class="copyLinkClass" type="button" :disabled="!form.room" @click="copyLink">
+      <button class="btn btn-primary" type="button" :disabled="!canGo" @click="goLive">Go!</button>
+      <button class="btn" :class="copyLinkClass" type="button" :disabled="!canGo" @click="copyLink">
         {{ copyLinkText }}
       </button>
     </div>
@@ -203,6 +203,17 @@ export default defineComponent({
       );
     });
 
+    const canGo = computed(() => {
+      const { auth, room, akId, akSecret, appId, code } = form;
+      switch (auth) {
+        case 'normal':
+          return !!room;
+        case 'open':
+          return !!(akId && akSecret && appId && code);
+      }
+      return false;
+    });
+
     const simpleForm = computed(() =>
       pick(
         fromPairs(
@@ -262,6 +273,7 @@ export default defineComponent({
 
     return {
       form,
+      canGo,
       goLive: () => (window.location.href = `live.html#${qss(getFinalForm())}`),
       copyLink,
       copyLinkClass,

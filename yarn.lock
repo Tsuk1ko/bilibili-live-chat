@@ -1238,6 +1238,13 @@
   resolved "https://registry.yarnpkg.com/@trysound/sax/-/sax-0.2.0.tgz#cccaab758af56761eb7bf37af6f03f326dd798ad"
   integrity sha512-L7z9BgrNEcYyUYtF+HaEfiS5ebkh9jXqbszz7pC0hRBPaatV0XjSD3+eHrpqFemQfgwiFF0QPIarnIihIDn7OA==
 
+"@tsuk1ko/postversion@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@tsuk1ko/postversion/-/postversion-1.0.2.tgz#69b29969b96e2c24cf0081366818ef4d23cc22a5"
+  integrity sha512-8SHVF8AA0iZhlmzv3QZ+1I5luKelVc7J6WAJbkRZJ638+zmxTadyNSVIiu4LxRfb6823MDHUra9HjVNw+Pigmg==
+  dependencies:
+    yesno "^0.4.0"
+
 "@types/body-parser@*":
   version "1.19.3"
   resolved "https://registry.yarnpkg.com/@types/body-parser/-/body-parser-1.19.3.tgz#fb558014374f7d9e56c8f34bab2042a3a07d25cd"
@@ -6663,6 +6670,11 @@ yargs@^16.0.0:
     string-width "^4.2.0"
     y18n "^5.0.5"
     yargs-parser "^20.2.2"
+
+yesno@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/yesno/-/yesno-0.4.0.tgz#5d674f14d339f0bd4b0edc47f899612c74fcd895"
+  integrity sha512-tdBxmHvbXPBKYIg81bMCB7bVeDmHkRzk5rVJyYYXurwKkHq/MCd8rz4HSJUP7hW0H2NlXiq8IFiWvYKEHhlotA==
 
 yorkie@^2.0.0:
   version "2.0.0"
