@@ -79,7 +79,7 @@ export default defineComponent({
         if (props.cookie) {
           const buvid = /\bbuvid3=([^;]+)\b/.exec(props.cookie)?.[1];
           const uid = /\bDedeUserID=([^;]+)\b/.exec(props.cookie)?.[1];
-          if (buvid && uid) {
+          if (buvid && uid && (await getRoomInfoSuccess)) {
             await corsGet(
               `https://api.live.bilibili.com/xlive/web-room/v1/index/getDanmuInfo?id=${props.room}&type=0`,
               {
@@ -87,7 +87,6 @@ export default defineComponent({
               }
             )
               .then(async ({ code, message, data: { token, host_list } }) => {
-                if (!(await getRoomInfoSuccess)) return;
                 if (code === 0) {
                   liveWsOptions.value = {
                     address: `wss://${host_list[0].host}/sub`,
