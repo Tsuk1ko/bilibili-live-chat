@@ -40,6 +40,9 @@
         <!-- Cookie -->
         <InputGroup header="Cookie">
           <input class="form-control" type="text" placeholder="选填，不填则为游客模式" v-model="form.cookie" />
+          <template #footer v-if="showQrLogin">
+            <a style="cursor: pointer" @click="openQrLoginWindow">扫码登录</a>
+          </template>
         </InputGroup>
       </template>
       <template v-else-if="form.auth === 'open'">
@@ -174,12 +177,13 @@
 </template>
 
 <script>
-import { defineComponent, unref, reactive, watch, computed, readonly, ref } from 'vue';
+import { defineComponent, unref, reactive, watch, computed, readonly, ref, onBeforeUnmount } from 'vue';
 import InputGroup from '@/components/InputGroup.vue';
 import { sget, sset } from '@/utils/storage';
 import { defaultProps, intProps, selectOptions } from '@/utils/props';
 import { stringify as qss } from 'query-string';
 import { fromPairs, pick, omit } from 'lodash';
+import { bindQrLogin, openQrLoginWindow, unbindQrLogin } from '@/utils/qrLogin';
 
 export default defineComponent({
   components: { InputGroup },
@@ -271,6 +275,19 @@ export default defineComponent({
       }
     };
 
+    const showQrLogin =
+      window.location.origin === 'https://blc.lolicon.app' || window.location.origin === 'http://localhost:8080';
+
+    if (showQrLogin) {
+      bindQrLogin(cookie => {
+        form.cookie = cookie;
+      });
+
+      onBeforeUnmount(() => {
+        unbindQrLogin();
+      });
+    }
+
     return {
       form,
       canGo,
@@ -279,6 +296,8 @@ export default defineComponent({
       copyLinkClass,
       copyLinkText,
       options: readonly(selectOptions),
+      showQrLogin,
+      openQrLoginWindow,
     };
   },
 });

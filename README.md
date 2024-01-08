@@ -30,7 +30,10 @@ B站在2023年7月左右开始对游客模式下的直播弹幕进行用户名�
 
 若提供 [live.bilibili.com](https://live.bilibili.com/) 的 cookie，则会使用该 cookie 调用B站 API 获取直播弹幕连接 token
 
-**由于需要发送 cookie，因此无论是否开启跨域模式，调用该 API 都需要依赖反代服务**（详见[跨域模式](#跨域模式)）
+支持手机 APP 扫码登录（仅限本项目官方站点）（[隐私声明](#隐私声明)）
+
+> [!NOTE]  
+> 由于需要发送 cookie，因此无论是否开启跨域模式，调用该 API 都需要依赖反代服务（详见[跨域模式](#跨域模式)）
 
 #### 开放平台
 
@@ -43,7 +46,7 @@ B站在2023年7月左右开始对游客模式下的直播弹幕进行用户名�
 
 ### 跨域模式
 
-B站 API 无法被跨域调用，若不开启跨域模式，则会使用我个人部署的一个反代服务，代码开源在 [Tsuk1ko/blc-proxy](https://github.com/Tsuk1ko/blc-proxy)，部署在 Cloudflare Workers，**本人(Tsuk1ko)不会从该服务收集任何信息，若不相信请勿在【关闭跨域模式】或【在普通连接模式下提供 cookie】的情况下使用本项目**
+B站 API 无法被跨域调用，若不开启跨域模式，则会使用反代服务（[隐私声明](#隐私声明)）
 
 若在 OBS 使用，则推荐开启跨域模式，方法如下：
 
@@ -68,6 +71,15 @@ B站 API 无法被跨域调用，若不开启跨域模式，则会使用我个�
 
 - 获取到头像后，图片会被预加载，加载完毕或超时（5 秒）后弹幕才会被插入弹幕列表
 - 非 GIF 头像会优先加载小头像（48x48）以节省流量，若首包到达时间超过 2 秒（B站 COS 图片压缩处理卡了，偶尔可能发生），则会回退为加载完整大小的头像图片
+
+## 隐私声明
+
+本项目官方站点 [blc.lolicon.app](https://blc.lolicon.app/) 会额外使用到以下两个本人开源并部署在公共平台上的服务：
+
+1. B站API反向代理服务 [Tsuk1ko/blc-proxy](https://github.com/Tsuk1ko/blc-proxy) 部署于 Cloudflare Workers
+2. B站扫码登录服务 [Tsuk1ko/bilibili-qr-login](https://github.com/Tsuk1ko/bilibili-qr-login) 部署于 [HuggingFace](https://huggingface.co/spaces/Mashir0/bilibili-qr-login)
+
+本站及上述服务不会收集任何信息，若不信任请勿在【关闭跨域模式】或【在普通连接模式下提供 cookie】的情况下使用本项目及【扫码登录】功能
 
 ## Project setup
 
