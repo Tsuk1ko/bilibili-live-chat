@@ -68,11 +68,9 @@ export default {
 <style lang="scss">
 @keyframes danmakuIn {
   from {
-    transform: translateX(30px);
     opacity: 0;
   }
   to {
-    transform: translateX(0);
     opacity: 1;
   }
 }
