@@ -55,8 +55,8 @@ async function getHmacSha256(key, message) {
 }
 
 const START_URL = 'https://live-open.biliapi.com/v2/app/start';
-// const HEARTBEAT_URL = 'https://live-open.biliapi.com/v2/app/heartbeat';
-const END_URL = 'https://live-open.biliapi.com/v2/app/end';
+const HEARTBEAT_URL = 'https://live-open.biliapi.com/v2/app/heartbeat';
+// const END_URL = 'https://live-open.biliapi.com/v2/app/end';
 
 async function callApi(url, data, akId, akSecret) {
   const body = JSON.stringify(data);
@@ -68,14 +68,19 @@ async function callApi(url, data, akId, akSecret) {
  * @param {string} akId
  * @param {string} akSecret
  * @param {number} appId
- * @param {string} code
+ * @param {string} authCode
  */
-export async function getOpenData(akId, akSecret, appId, code) {
-  const { code: retCode, message, data } = await callApi(START_URL, { code, app_id: appId }, akId, akSecret);
-  if (retCode !== 0) throw new Error(message);
+export async function getOpenData(akId, akSecret, appId, authCode) {
+  const startRes = await callApi(START_URL, { code: authCode, app_id: appId }, akId, akSecret);
+  console.log('open start', startRes);
+  const { code, message, data } = startRes;
+  if (code !== 0) throw new Error(message);
   const gameId = data.game_info.game_id;
-  if (gameId) {
-    callApi(END_URL, { app_id: appId, game_id: data.game_info.game_id }, akId, akSecret).catch(console.error);
-  }
+  if (!gameId) throw new Error('no game id');
+  setInterval(async () => {
+    const heartbeatRet = await callApi(HEARTBEAT_URL, { game_id: gameId }, akId, akSecret);
+    if (heartbeatRet.code === 0) console.log('open heartbeat success');
+    else console.error('open heartbeat error', heartbeatRet);
+  }, 20e3);
   return data;
 }
