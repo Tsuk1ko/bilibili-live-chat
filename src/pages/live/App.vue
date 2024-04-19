@@ -82,9 +82,7 @@ export default defineComponent({
           if (buvid && uid && (await getRoomInfoSuccess)) {
             await corsGet(
               `https://api.live.bilibili.com/xlive/web-room/v1/index/getDanmuInfo?id=${props.room}&type=0`,
-              {
-                headers: { Cookie: props.cookie },
-              }
+              { headers: { Cookie: props.cookie } }
             )
               .then(async ({ code, message, data: { token, host_list } }) => {
                 if (code === 0) {
@@ -105,9 +103,7 @@ export default defineComponent({
                 }
               })
               .catch(e => {
-                eMsg.push(
-                  `获取 token 失败${canCORS ? '，请检查是否正确禁用了浏览器的 web security 以允许直接跨域' : ''}`
-                );
+                eMsg.push('获取 token 失败');
                 eMsg.push(String(e));
               });
           }
