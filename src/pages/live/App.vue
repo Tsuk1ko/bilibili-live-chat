@@ -60,7 +60,9 @@ export default defineComponent({
         const eMsg = [];
 
         // 获取房间信息
-        const getRoomInfoSuccess = autoGet(`https://api.live.bilibili.com/room/v1/Room/room_init?id=${props.room}`)
+        const getRoomInfoSuccess = autoGet(`https://api.live.bilibili.com/room/v1/Room/room_init?id=${props.room}`, {
+          headers: { Cookie: props.cookie },
+        })
           .then(({ code, msg, data: { room_id, uid } }) => {
             if (code === 0) {
               props.room = parseInt(room_id);

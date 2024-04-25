@@ -78,8 +78,8 @@ B站 API 无法被跨域调用，若不开启跨域模式，则会使用反代�
 
 本项目官方站点 [blc.lolicon.app](https://blc.lolicon.app/) 会额外使用到以下两个本人开源并部署在公共平台上的服务：
 
-1. B站API反向代理服务 [Tsuk1ko/blc-proxy](https://github.com/Tsuk1ko/blc-proxy) 部署于 Cloudflare Workers
-2. B站扫码登录服务 [Tsuk1ko/bilibili-qr-login](https://github.com/Tsuk1ko/bilibili-qr-login) 部署于 [HuggingFace](https://huggingface.co/spaces/Mashir0/bilibili-qr-login)
+1. B站API反向代理服务 [Tsuk1ko/blc-proxy](https://github.com/Tsuk1ko/blc-proxy) 部署于 HuggingFace
+2. B站扫码登录服务 [Tsuk1ko/bilibili-qr-login](https://github.com/Tsuk1ko/bilibili-qr-login) 部署于 HuggingFace
 
 本站及上述服务不会收集任何信息，若不信任请勿在【关闭跨域模式】或【在普通连接模式下提供 cookie】的情况下使用本项目及【扫码登录】功能
 
